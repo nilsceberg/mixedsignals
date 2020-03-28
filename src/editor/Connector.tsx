@@ -1,10 +1,12 @@
 import React from "react";
 import { makeStyles, Theme, colors, Paper } from "@material-ui/core";
+import { ConnectorName, EditorContext } from "./Types";
 
 export interface ConnectorProps {
 	type: "input" | "output",
 	name: string,
-	onConnect?: (name: string, remote: string) => void,
+	node: string,
+	onConnect?: (me: ConnectorName, remote: ConnectorName) => boolean,
 }
 
 export const ConnectorRadius = 8;
@@ -50,9 +52,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const Connector = (props: ConnectorProps) => {
 	const classes = useStyles(props);
-	return <div className={classes.container}>
-		<div className={classes.dummy}/>
-		<div className={classes.label}>{props.name}</div>
-		<div className={classes.connector}></div>
-	</div>;
+	return <EditorContext.Consumer>
+		{value =>
+			<div className={classes.container} onClick={() => value.onClick([props.node, props.name])}>
+				<div className={classes.dummy}/>
+				<div className={classes.label}>{props.name}</div>
+				<div className={classes.connector}></div>
+			</div>
+		}
+	</EditorContext.Consumer>;
 }

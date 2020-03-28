@@ -5,6 +5,7 @@ import { Classes } from "@material-ui/styles/mergeClasses/mergeClasses";
 import Draggable from "react-draggable";
 import { ConnectorProps, Connector } from "./Connector";
 import { Connectors, Inputs, Outputs } from "./Side";
+import { EditorContext } from "./Types";
 
 const styles = (theme: Theme) => createStyles({
 	node: {
@@ -47,29 +48,28 @@ const styles = (theme: Theme) => createStyles({
 });
 
 interface NodeState {
-	uuid: string,
 }
 
 interface NodeProps {
+	id: string,
 	classes: Classes,
 	name: string,
-	io: ConnectorProps[],
+	io: Omit<ConnectorProps, "node">[],
 }
 
 export const Node = withStyles(styles)(class extends React.Component<NodeProps, NodeState> {
+	static contextType = EditorContext;
+
 	constructor(props: NodeProps) {
 		super(props);
-		this.state = {
-			uuid: uuid.v4()
-		};
 	}
 	
 	componentDidMount() {
-		console.log("Node created: " + this.state.uuid);
+		console.log("Node created: " + this.props.id);
 	}
 
 	componentWillUnmount() {
-		console.log("Node deleted: " + this.state.uuid);
+		console.log("Node deleted: " + this.props.id);
 	}
 
 	render() {
@@ -86,12 +86,12 @@ export const Node = withStyles(styles)(class extends React.Component<NodeProps, 
 				<Connectors>
 					<Inputs>
 						{this.props.io.filter(c => c.type === "input").map(props =>
-							<Connector {...props}/>
+							<Connector {...props} node={this.props.id} key={props.name}/>
 						)}
 					</Inputs>
 					<Outputs>
 						{this.props.io.filter(c => c.type === "output").map(props =>
-							<Connector {...props}/>
+							<Connector {...props} node={this.props.id} key={props.name}/>
 						)}
 					</Outputs>
 				</Connectors>
