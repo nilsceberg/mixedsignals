@@ -20,7 +20,9 @@ export const Editor = (props: {}) => {
 	const classes = useStyles(props);
 	return <div className={classes.editor}>
 		<Node name="Sine Wave" io={[{type: "output", name: "signal"}]}>
-			<TextField size="small" variant="outlined" label="Frequency (Hz)" type="number"/>
+			<TextField size="small" variant="outlined" label="Frequency (Hz)" type="number"/><br/>
+			<TextField size="small" variant="outlined" label="Amplitude" type="number"/><br/>
+			<TextField size="small" variant="outlined" label="Phase (rad)" type="number"/>
 		</Node>
 		<Node name="Sum" io={[
 			{ type: "input", name: "input0" },

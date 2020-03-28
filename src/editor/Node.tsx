@@ -35,13 +35,15 @@ const styles = (theme: Theme) => createStyles({
 	controls: {
 		overflow: "default",
 		padding: `0px ${theme.spacing(1)}px`,
-		// This makes text fields look better but inputs worse
-		marginTop: theme.spacing(2),
+		marginTop: theme.spacing(1),
 		marginBottom: theme.spacing(1),
+		"& > *": {
+			marginTop: theme.spacing(1),
+		}
 	},
 	title: {
 		lineHeight: "1em",
-	}
+	},
 });
 
 interface NodeState {
