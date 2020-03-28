@@ -1,7 +1,8 @@
 import React from "react";
-import { makeStyles, Theme, colors } from "@material-ui/core";
+import { makeStyles, Theme, colors, Paper } from "@material-ui/core";
 
 export interface ConnectorProps {
+	type: "input" | "output",
 	name: string,
 	onConnect?: (name: string, remote: string) => void,
 }
@@ -9,19 +10,49 @@ export interface ConnectorProps {
 export const ConnectorRadius = 8;
 
 const useStyles = makeStyles((theme: Theme) => ({
+	container: {
+		boxSizing: "border-box",
+		flexBasis: "80%",
+		display: "flex",
+		flexDirection: (props: ConnectorProps) => props.type === "output" ? "row" : "row-reverse",
+		marginTop: theme.spacing(1),
+		position: "relative",
+		right: (props: ConnectorProps) => props.type === "output" ? `-${ConnectorRadius + theme.spacing(1)}px` : undefined,
+		left: (props: ConnectorProps) => props.type === "input" ? `-${ConnectorRadius + theme.spacing(1)}px` : undefined,
+	},
+	dummy: {
+		flexGrow: 1,
+	},
+	label: {
+		textAlign: (props: ConnectorProps) => props.type === "output" ? "right" : "left",
+		marginLeft: theme.spacing(0.5),
+		marginRight: theme.spacing(0.5),
+		boxSizing: "border-box",
+		padding: "2px",
+		borderRadius: "2px",
+		height: "100%",
+		fontSize: "7pt",
+		flexGrow: 0,
+		verticalAlign: "middle",
+		backgroundColor: theme.palette.background.default,
+	},
 	connector: {
+		flexGrow: 0,
 		backgroundColor: colors.yellow[400],
 		boxSizing: "border-box",
 		width: `${2 * ConnectorRadius}px`,
 		height: `${2 * ConnectorRadius}px`,
 		border: `2px solid ${colors.grey[900]}`,
 		borderRadius: `${ConnectorRadius}px`,
-		margin: `${ConnectorRadius / 2}px 0px`,
+		cursor: "pointer",
 	}
 }));
 
 export const Connector = (props: ConnectorProps) => {
 	const classes = useStyles(props);
-	return <div className={classes.connector}>
+	return <div className={classes.container}>
+		<div className={classes.dummy}/>
+		<div className={classes.label}>{props.name}</div>
+		<div className={classes.connector}></div>
 	</div>;
 }

@@ -6,15 +6,36 @@ import Draggable from "react-draggable";
 
 const styles = (theme: Theme) => createStyles({
 	node: {
-		width: "220px",
-		height: "150px",
-		padding: theme.spacing(1)
+		//overflow: "hidden",
+		display: "inline-block",
+		width: "auto",
+		//overflowX: "auto",
+		//width: "220px",
+		//height: "150px",
 	},
 	uuid: {
+		display: "none",
+		//overflow: "hidden",
+		//wordWrap: "break-word",
 		fontSize: "7pt",
 		lineHeight: "1em",
 		textTransform: "uppercase",
 		color: theme.palette.grey[600]
+	},
+	handle: {
+		padding: theme.spacing(1),
+		overflow: "hidden",
+		backgroundColor: theme.palette.secondary.dark,
+		cursor: "move",
+		borderTopRightRadius: theme.shape.borderRadius,
+		borderTopLeftRadius: theme.shape.borderRadius,
+	},
+	controls: {
+		overflow: "default",
+		padding: theme.spacing(1),
+	},
+	title: {
+		lineHeight: "1em",
 	}
 });
 
@@ -45,11 +66,15 @@ export const Node = withStyles(styles)(class extends React.Component<NodeProps, 
 
 	render() {
 		console.log(this.props);
-		return <Draggable>
+		return <Draggable handle={`.${this.props.classes.handle}`}>
 			<Paper className={this.props.classes.node} elevation={2}>
-				<div className={this.props.classes.uuid}>{ this.state.uuid }</div>
-				<Typography variant="overline">{this.props.name}</Typography>
-				{this.props.children}
+				<div className={this.props.classes.handle}>
+					{/*<div className={this.props.classes.uuid}>{ this.state.uuid }</div>*/}
+					<Typography className={this.props.classes.title} variant="overline" >{this.props.name}</Typography><br/>
+				</div>
+				<div className={this.props.classes.controls}>
+					{this.props.children}
+				</div>
 			</Paper>
 		</Draggable>;
 	}
