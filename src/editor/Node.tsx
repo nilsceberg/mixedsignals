@@ -3,6 +3,8 @@ import * as uuid from "uuid";
 import { Theme, Paper, withStyles, Typography, createStyles } from "@material-ui/core";
 import { Classes } from "@material-ui/styles/mergeClasses/mergeClasses";
 import Draggable from "react-draggable";
+import { ConnectorProps, Connector } from "./Connector";
+import { Connectors, Inputs, Outputs } from "./Side";
 
 const styles = (theme: Theme) => createStyles({
 	node: {
@@ -32,7 +34,10 @@ const styles = (theme: Theme) => createStyles({
 	},
 	controls: {
 		overflow: "default",
-		padding: theme.spacing(1),
+		padding: `0px ${theme.spacing(1)}px`,
+		// This makes text fields look better but inputs worse
+		marginTop: theme.spacing(2),
+		marginBottom: theme.spacing(1),
 	},
 	title: {
 		lineHeight: "1em",
@@ -46,6 +51,7 @@ interface NodeState {
 interface NodeProps {
 	classes: Classes,
 	name: string,
+	io: ConnectorProps[],
 }
 
 export const Node = withStyles(styles)(class extends React.Component<NodeProps, NodeState> {
@@ -75,6 +81,18 @@ export const Node = withStyles(styles)(class extends React.Component<NodeProps, 
 				<div className={this.props.classes.controls}>
 					{this.props.children}
 				</div>
+				<Connectors>
+					<Inputs>
+						{this.props.io.filter(c => c.type === "input").map(props =>
+							<Connector {...props}/>
+						)}
+					</Inputs>
+					<Outputs>
+						{this.props.io.filter(c => c.type === "output").map(props =>
+							<Connector {...props}/>
+						)}
+					</Outputs>
+				</Connectors>
 			</Paper>
 		</Draggable>;
 	}

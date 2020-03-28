@@ -15,10 +15,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 		flexBasis: "80%",
 		display: "flex",
 		flexDirection: (props: ConnectorProps) => props.type === "output" ? "row" : "row-reverse",
-		marginTop: theme.spacing(1),
+		marginBottom: theme.spacing(1),
 		position: "relative",
-		right: (props: ConnectorProps) => props.type === "output" ? `-${ConnectorRadius + theme.spacing(1)}px` : undefined,
-		left: (props: ConnectorProps) => props.type === "input" ? `-${ConnectorRadius + theme.spacing(1)}px` : undefined,
+		right: (props: ConnectorProps) => props.type === "output" ? `-${ConnectorRadius}px` : undefined,
+		left: (props: ConnectorProps) => props.type === "input" ? `-${ConnectorRadius}px` : undefined,
 	},
 	dummy: {
 		flexGrow: 1,

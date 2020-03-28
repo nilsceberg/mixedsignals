@@ -21,6 +21,7 @@ const sideStyles = (theme: Theme) => createStyles({
 
 const tableStyles = (theme: Theme) => createStyles({
 	table: {
+		//padding: theme.spacing(1),
 		//paddingTop: theme.spacing(1),
 		//backgroundColor: "green",
 		display: "flex",

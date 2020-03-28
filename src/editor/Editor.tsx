@@ -19,46 +19,24 @@ const useStyles = makeStyles((theme: Theme) => ({
 export const Editor = (props: {}) => {
 	const classes = useStyles(props);
 	return <div className={classes.editor}>
-		<Node name="Sine Wave">
+		<Node name="Sine Wave" io={[{type: "output", name: "signal"}]}>
 			<TextField size="small" variant="outlined" label="Frequency (Hz)" type="number"/>
-			<Connectors>
-				<Inputs></Inputs>
-				<Outputs>
-					<Connector type="output" name="signal"/>
-				</Outputs>
-			</Connectors>
 		</Node>
-		<Node name="Sum">
-			<Connectors>
-				<Inputs>
-					<Connector type="input" name="input0"/>
-					<Connector type="input" name="input1"/>
-				</Inputs>
-				<Outputs>
-					<Connector type="output" name="sum"/>
-				</Outputs>
-			</Connectors>
+		<Node name="Sum" io={[
+			{ type: "input", name: "input0" },
+			{ type: "input", name: "input1" },
+			{ type: "output", name: "sum" },
+		]}>
 		</Node>
-		<Node name="Fourier Transform">
-			<Connectors>
-				<Inputs>
-					<Connector type="input" name="input"/>
-				</Inputs>
-				<Outputs>
-					<Connector type="output" name="mode0"/>
-					<Connector type="output" name="mode1"/>
-				</Outputs>
-			</Connectors>
+		<Node name="Fourier Transform" io={[
+			{ type: "input", name: "input" },
+			{ type: "output", name: "mode0" },
+			{ type: "output", name: "mode1" },
+		]}>
 		</Node>
-		<Node name="Visualizer">
-			<Connectors>
-				<Inputs>
-					<Connector type="input" name="input0"/>
-					<Connector type="input" name="input1"/>
-				</Inputs>
-				<Outputs>
-				</Outputs>
-			</Connectors>
+		<Node name="Visualizer" io={[
+			{ type: "input", name: "signal" }
+		]}>
 		</Node>
 	</div>;
 };
