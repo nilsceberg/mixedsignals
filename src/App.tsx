@@ -57,8 +57,8 @@ export const App = withStyles(styles)((props: { classes: Classes }) => {
 			</AppBar>
 			<Editor graph={[
 				[["source", "signal"], ["fourier", "input"]],
-				[["fourier", "mode0"], ["sum", "input1"]],
-				[["fourier", "mode1"], ["sum", "input0"]],
+				[["fourier", "mode0"], ["sum", "input0"]],
+				[["fourier", "mode1"], ["sum", "input1"]],
 				[["sum", "sum"], ["visualizer", "signal"]],
 			]}>
 				<Node id="source" name="Sine Wave" io={[{type: "output", name: "signal"}]}>

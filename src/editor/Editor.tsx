@@ -59,6 +59,12 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 		}
 	}
 
+	componentDidUpdate() {
+		for (const connection of this.props.graph) {
+			this.drawConnection(connection);
+		}
+	}
+
 	drawConnection(connection: Connection) {
 		if (this.graph.current) {
 			const id = this.getConnectionId(connection);
@@ -74,7 +80,7 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 			const [x1, y1] = this.getConnectorCoordinates(connection[0]);
 			const [x2, y2] = this.getConnectorCoordinates(connection[1]);
 
-			path.setAttribute("d", `M ${x1} ${y1} C ${x1 + 60} ${y1}, ${x2 - 60} ${y2}, ${x2} ${y2}`)
+			path.setAttribute("d", `M ${x1} ${y1} C ${x1 + 100} ${y1}, ${x2 - 100} ${y2}, ${x2} ${y2}`)
 			console.log("set attribute for " + id + " to " + path.getAttribute("d"));
 		}
 	}
@@ -130,7 +136,7 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 			<div className={classes.editor}>
 				{/*<Graph a={[100, 100]} b={this.state.mouse}/>*/}
 				<svg className={classes.graph} ref={this.graph}>
-					{/*<path id="mousepath" d={`M 100 100 C 160 100, 400 400, 460 400`} stroke="white" fill="none"/>*/}
+					<path id="mousepath" d={`M 100 100 C 160 100, 400 400, 460 400`} stroke="none" fill="none"/>
 				</svg>
 				{this.props.children}
 			</div>
