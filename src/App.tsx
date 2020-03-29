@@ -5,8 +5,10 @@ import "./App.css";
 import { CssBaseline, Theme, createMuiTheme, AppBar, Typography, Switch, FormControlLabel, Box, TextField } from "@material-ui/core";
 import { withStyles, ThemeProvider, createStyles } from "@material-ui/styles";
 import { Classes } from "@material-ui/styles/mergeClasses/mergeClasses";
+import { Line, Scatter } from "react-chartjs-2";
 import { Editor } from "./editor/Editor";
 import { Node } from "./editor/Node";
+import { Visualizer } from "./nodes/Visualizer";
 
 const styles = (theme: Theme) => createStyles({
 	bar: {
@@ -78,10 +80,7 @@ export const App = withStyles(styles)((props: { classes: Classes }) => {
 					{ type: "output", name: "mode1" },
 				]}>
 				</Node>
-				<Node id="visualizer" name="Visualizer" io={[
-					{ type: "input", name: "signal" }
-				]}>
-				</Node>
+				<Visualizer/>
 			</Editor>
 		</ThemeProvider>
 	</div>;
