@@ -44,6 +44,7 @@ const styles = (theme: Theme) => createStyles({
 	},
 	title: {
 		lineHeight: "1em",
+		color: theme.palette.secondary.contrastText,
 	},
 });
 
@@ -76,7 +77,6 @@ export const Node = withStyles(styles)(class extends React.Component<NodeProps, 
 		return <Draggable handle={`.${this.props.classes.handle}`} onDrag={() => this.context.onMoveNode(this.props.id)}>
 			<Paper className={this.props.classes.node} elevation={2}>
 				<div className={this.props.classes.handle}>
-					{/*<div className={this.props.classes.uuid}>{ this.state.uuid }</div>*/}
 					<Typography className={this.props.classes.title} variant="overline" >{this.props.name}</Typography><br/>
 				</div>
 				<div className={this.props.classes.controls}>

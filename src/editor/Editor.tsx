@@ -23,6 +23,7 @@ const styles = (theme: Theme) => createStyles({
 		left: "0px",
 		width: "100%",
 		height: "100%",
+		filter: theme.palette.type === "light" ? "invert(1)" : "none",
 	}
 });
 

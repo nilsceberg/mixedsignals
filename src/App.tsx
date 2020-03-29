@@ -88,6 +88,12 @@ export const App = withStyles(styles)((props: { classes: Classes }) => {
 					{ type: "output", name: "sum" },
 				]}>
 				</Node>
+				<Node id="sum2" name="Sum" io={[
+					{ type: "input", name: "input0" },
+					{ type: "input", name: "input1" },
+					{ type: "output", name: "sum" },
+				]}>
+				</Node>
 				<Node id="fourier" name="Fourier Transform" io={[
 					{ type: "input", name: "input" },
 					{ type: "output", name: "mode0" },
