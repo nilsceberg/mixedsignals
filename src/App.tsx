@@ -9,6 +9,7 @@ import { Line, Scatter } from "react-chartjs-2";
 import { Editor } from "./editor/Editor";
 import { Node } from "./editor/Node";
 import { Visualizer } from "./nodes/Visualizer";
+import { Connection, connectionEquals } from "./editor/Types";
 
 const styles = (theme: Theme) => createStyles({
 	bar: {
@@ -42,6 +43,24 @@ export const App = withStyles(styles)((props: { classes: Classes }) => {
 		}
 	}));
 
+	const [ graph, setGraph ] = useState<Connection[]>([
+		[["source", "signal"], ["fourier", "input"]],
+	]);
+
+	const addConnection = (connection: Connection) => {
+		const newGraph = [...graph, connection];
+		console.log("new connection: ", newGraph);
+		setGraph(newGraph);
+	};
+
+	const removeConnection = (connection: Connection) => {
+		const newGraph = graph.filter(c => !(connectionEquals(c, connection)));
+		console.log("removed connection: ", newGraph);
+		setGraph(newGraph);
+	}
+
+	console.log(graph);
+
 	return <div className={ props.classes.app }>
 		<CssBaseline/>
 		<ThemeProvider theme={theme}>
@@ -57,12 +76,7 @@ export const App = withStyles(styles)((props: { classes: Classes }) => {
 					}}/>}/>
 				</Box>
 			</AppBar>
-			<Editor graph={[
-				[["source", "signal"], ["fourier", "input"]],
-				[["fourier", "mode0"], ["sum", "input0"]],
-				[["fourier", "mode1"], ["sum", "input1"]],
-				[["sum", "sum"], ["visualizer", "signal"]],
-			]}>
+			<Editor graph={graph} onConnectionCreated={addConnection} onConnectionDeleted={removeConnection}>
 				<Node id="source" name="Sine Wave" io={[{type: "output", name: "signal"}]}>
 					<TextField size="small" variant="outlined" label="Frequency (Hz)" type="number"/><br/>
 					<TextField size="small" variant="outlined" label="Amplitude" type="number"/><br/>

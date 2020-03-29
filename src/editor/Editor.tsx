@@ -27,8 +27,10 @@ const styles = (theme: Theme) => createStyles({
 });
 
 export interface EditorProps {
-	graph: Connection[],
-	children?: React.ReactNode,
+	graph: Connection[];
+	children?: React.ReactNode;
+	onConnectionCreated?: (connection: Connection) => void;
+	onConnectionDeleted?: (connection: Connection) => void;
 }
 
 interface EditorState {
@@ -78,7 +80,13 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 		const path: SVGPathElement = this.graph.current?.getElementById("mousepath") as SVGPathElement;
 		if (path && this.state.connectFrom) {
 			const connector = this.getConnectorCoordinates(this.state.connectFrom);
-			path.setAttribute("d", this.bezier(connector, mouse));
+
+			if (this.state.sourceDirection === "input") {
+				path.setAttribute("d", this.bezier(mouse, connector));
+			}
+			else {
+				path.setAttribute("d", this.bezier(connector, mouse));
+			}
 		}
 	}
 
@@ -142,11 +150,6 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 		}
 	}
 
-	//componentWillUpdate() {
-	//	console.log("update hook");
-	//	this.drawDanglingConnection(this.lastMouseCoords);
-	//}
-
 	render() {
 		const classes = this.props.classes;
 
@@ -161,28 +164,53 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 					if (direction === this.state.sourceDirection) return;
 
 					// Trigger connection creation event
-					console.log("onConnectionCreated")
+					console.log("onConnectionCreated: ", this.state.connectFrom, name);
+					if (this.props.onConnectionCreated) this.props.onConnectionCreated([this.state.connectFrom, name]);
+
 					if (direction === "input") {
 						// If there is already a connection here, grab that connection,
 						// since inputs can only have one connection
-
-						// Trigger onConnectionDeleted
-						console.log("onConnectionDeleted");
 						
 						const existing = this.connectionsTo(name);
 						if (existing.length === 1) {
 							const remote = this.remote(existing[0], name);
 							const ref = this.getRef(remote);
-							console.log(remote, ref);
+
+							// This is problematic since we have already fired one event
+							// that probably will have changed some state higher up.
+							// If we in response to the same event, fire another one,
+							// the second event handler will probably overwrite the first change.
+
+							// I see three solutions: either implement an onChange and return the entire
+							// new graph (which is kind of something I'd like to avoid for flexibility reasons
+							// when it comes to the graph data structure, though, even though
+							// it's the more React-y way of doing it).
+
+							// The second one is to add a third event handler, which is specifically for this
+							// dual-change situation (onConnectionSwapped or similar).
+
+							// The third solution is the worst one, so let's do that! We wait for the
+							// current call stack to complete using setTimeout and then trigger our second event.
+
+							setTimeout(() => {
+								console.log("onConnectionDeleted: ", remote, name);
+								if (this.props.onConnectionDeleted) this.props.onConnectionDeleted([remote, name]);
+							}, 0);
 
 							this.setState({
 								connectFrom: remote,
-								sourceDirection: direction,
+								sourceDirection: "output",
+							});
+						}
+						else {
+							// Otherwise, simply conclude the edit
+							this.setState({
+								connectFrom: null
 							});
 						}
 					}
 					else {
-						// Otherwise, simply conclude the edit
+						// If output, always conclude the edit
 						this.setState({
 							connectFrom: null
 						});
@@ -193,23 +221,30 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 						// If there is already a connection here, grab that connection,
 						// since inputs can only have one connection
 
-						// Trigger onConnectionDeleted
-						console.log("onConnectionDeleted");
-
 						const existing = this.connectionsTo(name);
 						if (existing.length === 1) {
 							const remote = this.remote(existing[0], name);
 							const ref = this.getRef(remote);
-							console.log(remote, ref);
+
+							// Trigger onConnectionDeleted
+							console.log("onConnectionDeleted: ", remote, name);
+							if (this.props.onConnectionDeleted) this.props.onConnectionDeleted([remote, name]);
 
 							this.setState({
 								connectFrom: remote,
+								sourceDirection: "output",
+							});
+						}
+						else {
+							// Otherwise, simply create a new one
+							this.setState({
+								connectFrom: name,
 								sourceDirection: direction,
 							});
 						}
 					}
 					else {
-						// Otherwise, simply make a new connection
+						// If output, always make a new connection
 						this.setState({
 							connectFrom: name,
 							sourceDirection: direction,
