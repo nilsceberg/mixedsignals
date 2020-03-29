@@ -67,9 +67,26 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 	}
 
 	componentDidUpdate() {
-		for (const connection of this.props.graph) {
-			this.drawConnection(connection);
+		if (this.graph.current) {
+			// First, clear SVG; remove all paths that are not 'dangling'
+			const clear: ChildNode[] = [];
+
+			this.graph.current.childNodes.forEach((child: any) => {
+				if (child.getAttribute("id") !== "dangling") {
+					clear.push(child);
+				}
+			});
+
+			for (const child of clear) {
+				this.graph.current.removeChild(child);
+			}
+
+
+			for (const connection of this.props.graph) {
+				this.drawConnection(connection);
+			}
 		}
+
 	}
 
 	bezier([x1, y1]: [number, number], [x2, y2]: [number, number]): string {
@@ -77,7 +94,7 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 	}
 
 	drawDanglingConnection(mouse: [number, number]) {
-		const path: SVGPathElement = this.graph.current?.getElementById("mousepath") as SVGPathElement;
+		const path: SVGPathElement = this.graph.current?.getElementById("dangling") as SVGPathElement;
 		if (path && this.state.connectFrom) {
 			const connector = this.getConnectorCoordinates(this.state.connectFrom);
 
@@ -164,8 +181,14 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 					if (direction === this.state.sourceDirection) return;
 
 					// Trigger connection creation event
-					console.log("onConnectionCreated: ", this.state.connectFrom, name);
-					if (this.props.onConnectionCreated) this.props.onConnectionCreated([this.state.connectFrom, name]);
+					if (direction === "input") {
+						console.log("onConnectionCreated: ", this.state.connectFrom, name);
+						if (this.props.onConnectionCreated) this.props.onConnectionCreated([this.state.connectFrom, name]);
+					}
+					else {
+						console.log("onConnectionCreated: ", name, this.state.connectFrom);
+						if (this.props.onConnectionCreated) this.props.onConnectionCreated([name, this.state.connectFrom]);
+					}
 
 					if (direction === "input") {
 						// If there is already a connection here, grab that connection,
@@ -278,7 +301,7 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 			<div className={classes.editor}>
 				{/*<Graph a={[100, 100]} b={this.state.mouse}/>*/}
 				<svg className={classes.graph} ref={this.graph} onClick={event => { console.log("edit cancelled", event.target); this.setState({ connectFrom: null }) }}>
-					<path id="mousepath" d={this.bezier(this.getConnectorCoordinates(this.state.connectFrom), this.lastMouseCoords)} stroke={this.state.connectFrom ? "white" : "none"} fill="none"/>
+					<path id="dangling" d={this.bezier(this.getConnectorCoordinates(this.state.connectFrom), this.lastMouseCoords)} stroke={this.state.connectFrom ? "white" : "none"} fill="none"/>
 				</svg>
 				{this.props.children}
 			</div>
