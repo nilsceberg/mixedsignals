@@ -1,6 +1,7 @@
 import React from "react";
-import { makeStyles, Theme, colors, Paper } from "@material-ui/core";
-import { ConnectorName, EditorContext } from "./Types";
+import { makeStyles, Theme, colors, Paper, withStyles, createStyles } from "@material-ui/core";
+import { ConnectorName, EditorContext, EditorContextType } from "./Types";
+import { Classes } from "@material-ui/styles/mergeClasses/mergeClasses";
 
 export interface ConnectorProps {
 	type: "input" | "output",
@@ -11,7 +12,7 @@ export interface ConnectorProps {
 
 export const ConnectorRadius = 8;
 
-const useStyles = makeStyles((theme: Theme) => ({
+const styles = (theme: Theme) => createStyles({
 	container: {
 		boxSizing: "border-box",
 		flexBasis: "80%",
@@ -48,17 +49,18 @@ const useStyles = makeStyles((theme: Theme) => ({
 		borderRadius: `${ConnectorRadius}px`,
 		cursor: "pointer",
 	}
-}));
+});
 
-export const Connector = (props: ConnectorProps) => {
-	const classes = useStyles(props);
-	return <EditorContext.Consumer>
-		{value =>
-			<div className={classes.container} onClick={() => value.onClick([props.node, props.name])}>
+export const Connector = withStyles(styles)(class extends React.Component<ConnectorProps & { classes: Classes }, {}> {
+	static contextType = EditorContext;
+
+	render() {
+		console.log("render connector");
+		const classes = this.props.classes;
+		return <div className={classes.container}>
 				<div className={classes.dummy}/>
-				<div className={classes.label}>{props.name}</div>
-				<div className={classes.connector}></div>
-			</div>
-		}
-	</EditorContext.Consumer>;
-}
+				<div className={classes.label}>{this.props.name}</div>
+				<div className={classes.connector} onClick={() => this.context.onClick([this.props.node, this.props.name])} ref={this.context.onRef([this.props.node, this.props.name])}></div>
+			</div>;
+	}
+});

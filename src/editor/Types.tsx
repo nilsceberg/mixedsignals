@@ -2,12 +2,12 @@ import React from "react";
 
 export interface EditorContextType {
 	onClick: (name: ConnectorName) => void;
-	onRef: (name: ConnectorName, ref: React.Ref<HTMLElement>) => void;
+	onRef: (name: ConnectorName) => React.RefObject<HTMLDivElement>;
 }
 
 export const EditorContext = React.createContext<EditorContextType>({
 	onClick: () => {},
-	onRef: () => {},
+	onRef: () => React.createRef(),
 });
 
 
