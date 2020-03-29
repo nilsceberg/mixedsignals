@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import logo from "./logo.svg";
 import Button from "@material-ui/core/Button";
 import "./App.css";
-import { CssBaseline, Theme, createMuiTheme, AppBar, Typography, Switch, FormControlLabel, Box } from "@material-ui/core";
+import { CssBaseline, Theme, createMuiTheme, AppBar, Typography, Switch, FormControlLabel, Box, TextField } from "@material-ui/core";
 import { withStyles, ThemeProvider, createStyles } from "@material-ui/styles";
 import { Classes } from "@material-ui/styles/mergeClasses/mergeClasses";
 import { Editor } from "./editor/Editor";
+import { Node } from "./editor/Node";
 
 const styles = (theme: Theme) => createStyles({
 	bar: {
@@ -54,7 +55,34 @@ export const App = withStyles(styles)((props: { classes: Classes }) => {
 					}}/>}/>
 				</Box>
 			</AppBar>
-			<Editor graph={[[["source", "signal"], ["visualizer", "signal"]]]}/>
+			<Editor graph={[
+				[["source", "signal"], ["fourier", "input"]],
+				[["fourier", "mode0"], ["sum", "input1"]],
+				[["fourier", "mode1"], ["sum", "input0"]],
+				[["sum", "sum"], ["visualizer", "signal"]],
+			]}>
+				<Node id="source" name="Sine Wave" io={[{type: "output", name: "signal"}]}>
+					<TextField size="small" variant="outlined" label="Frequency (Hz)" type="number"/><br/>
+					<TextField size="small" variant="outlined" label="Amplitude" type="number"/><br/>
+					<TextField size="small" variant="outlined" label="Phase (rad)" type="number"/>
+				</Node>
+				<Node id="sum" name="Sum" io={[
+					{ type: "input", name: "input0" },
+					{ type: "input", name: "input1" },
+					{ type: "output", name: "sum" },
+				]}>
+				</Node>
+				<Node id="fourier" name="Fourier Transform" io={[
+					{ type: "input", name: "input" },
+					{ type: "output", name: "mode0" },
+					{ type: "output", name: "mode1" },
+				]}>
+				</Node>
+				<Node id="visualizer" name="Visualizer" io={[
+					{ type: "input", name: "signal" }
+				]}>
+				</Node>
+			</Editor>
 		</ThemeProvider>
 	</div>;
 });

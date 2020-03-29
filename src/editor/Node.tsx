@@ -5,7 +5,7 @@ import { Classes } from "@material-ui/styles/mergeClasses/mergeClasses";
 import Draggable from "react-draggable";
 import { ConnectorProps, Connector } from "./Connector";
 import { Connectors, Inputs, Outputs } from "./Side";
-import { EditorContext } from "./Types";
+import { EditorContext, EditorContextType } from "./Types";
 
 const styles = (theme: Theme) => createStyles({
 	node: {
@@ -74,7 +74,7 @@ export const Node = withStyles(styles)(class extends React.Component<NodeProps, 
 
 	render() {
 		console.log(this.props);
-		return <Draggable handle={`.${this.props.classes.handle}`}>
+		return <Draggable handle={`.${this.props.classes.handle}`} onDrag={() => this.context.onMoveNode(this.props.id)}>
 			<Paper className={this.props.classes.node} elevation={2}>
 				<div className={this.props.classes.handle}>
 					{/*<div className={this.props.classes.uuid}>{ this.state.uuid }</div>*/}

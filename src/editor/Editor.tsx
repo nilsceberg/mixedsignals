@@ -47,9 +47,11 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 	componentDidMount() {
 		window.onmousemove = (event: MouseEvent) => {
 			const path: SVGPathElement = this.graph.current?.getElementById("mousepath") as SVGPathElement;
-			const x = event.clientX;
-			const y = event.clientY;
-			path.setAttribute("d", `M 100 100 C 160 100, ${x - 60} ${y}, ${x} ${y}`)
+			if (path) {
+				const x = event.clientX;
+				const y = event.clientY;
+				path.setAttribute("d", `M 100 100 C 160 100, ${x - 60} ${y}, ${x} ${y}`)
+			}
 		};
 
 		for (const connection of this.props.graph) {
@@ -113,6 +115,14 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 				const ref = React.createRef<HTMLDivElement>();
 				this.connectorRefs[`${name[0]}-${name[1]}`] = ref;
 				return ref;
+			},
+			onMoveNode: (name: string) => {
+				// Update all edges related to this node
+				for (const connection of this.props.graph) {
+					if (connection[0][0] === name || connection[1][0] === name) {
+						this.drawConnection(connection);
+					}
+				}
 			}
 		}
 
@@ -120,29 +130,9 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 			<div className={classes.editor}>
 				{/*<Graph a={[100, 100]} b={this.state.mouse}/>*/}
 				<svg className={classes.graph} ref={this.graph}>
-					<path id="mousepath" d={`M 100 100 C 160 100, 400 400, 460 400`} stroke="white" fill="none"/>
-				</svg>;
-				<Node id="source" name="Sine Wave" io={[{type: "output", name: "signal"}]}>
-					<TextField size="small" variant="outlined" label="Frequency (Hz)" type="number"/><br/>
-					<TextField size="small" variant="outlined" label="Amplitude" type="number"/><br/>
-					<TextField size="small" variant="outlined" label="Phase (rad)" type="number"/>
-				</Node>
-				<Node id="system1" name="Sum" io={[
-					{ type: "input", name: "input0" },
-					{ type: "input", name: "input1" },
-					{ type: "output", name: "sum" },
-				]}>
-				</Node>
-				<Node id="system2" name="Fourier Transform" io={[
-					{ type: "input", name: "input" },
-					{ type: "output", name: "mode0" },
-					{ type: "output", name: "mode1" },
-				]}>
-				</Node>
-				<Node id="visualizer" name="Visualizer" io={[
-					{ type: "input", name: "signal" }
-				]}>
-				</Node>
+					{/*<path id="mousepath" d={`M 100 100 C 160 100, 400 400, 460 400`} stroke="white" fill="none"/>*/}
+				</svg>
+				{this.props.children}
 			</div>
 		</EditorContext.Provider>;
 	}
