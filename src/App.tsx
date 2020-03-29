@@ -54,7 +54,7 @@ export const App = withStyles(styles)((props: { classes: Classes }) => {
 					}}/>}/>
 				</Box>
 			</AppBar>
-			<Editor/>
+			<Editor graph={[[["source", "signal"], ["visualizer", "signal"]]]}/>
 		</ThemeProvider>
 	</div>;
 });

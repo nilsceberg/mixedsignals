@@ -2,8 +2,9 @@ import React from "react";
 import { Theme, makeStyles, Paper, TextField, InputLabel, AppBar, Typography, createStyles, withStyles } from "@material-ui/core";
 import { Classes } from "@material-ui/styles/mergeClasses/mergeClasses";
 import { Node } from "./Node";
-import { Graph, ConnectorName } from "./Types";
+import { Graph, ConnectorName, Connection } from "./Types";
 import { EditorContextType, EditorContext } from "./Types";
+import { ConnectorRadius } from "./Connector";
 //import { Graph } from "./Graph";
 
 const styles = (theme: Theme) => createStyles({
@@ -26,6 +27,7 @@ const styles = (theme: Theme) => createStyles({
 });
 
 export interface EditorProps {
+	graph: Connection[],
 	children?: React.ReactNode,
 }
 
@@ -49,6 +51,46 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 			const y = event.clientY;
 			path.setAttribute("d", `M 100 100 C 160 100, ${x - 60} ${y}, ${x} ${y}`)
 		};
+
+		for (const connection of this.props.graph) {
+			this.drawConnection(connection);
+		}
+	}
+
+	drawConnection(connection: Connection) {
+		if (this.graph.current) {
+			const id = this.getConnectionId(connection);
+			let path = this.graph.current.getElementById(id);
+			if (!path) {
+				path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+				path.setAttribute("id", id);
+				path.setAttribute("stroke", "white");
+				path.setAttribute("fill", "none");
+				this.graph.current.appendChild(path);
+			}
+
+			const [x1, y1] = this.getConnectorCoordinates(connection[0]);
+			const [x2, y2] = this.getConnectorCoordinates(connection[1]);
+
+			path.setAttribute("d", `M ${x1} ${y1} C ${x1 + 60} ${y1}, ${x2 - 60} ${y2}, ${x2} ${y2}`)
+			console.log("set attribute for " + id + " to " + path.getAttribute("d"));
+		}
+	}
+
+	getConnectionId(connection: Connection): string {
+		return `${connection[0][0]}-${connection[0][1]}_${connection[1][0]}-${connection[1][1]}`;
+	}
+
+	getConnectorCoordinates(name: ConnectorName): [number, number] {
+		const key = `${name[0]}-${name[1]}`;
+		const connector = this.connectorRefs[key];
+		if (connector && connector.current) {
+			const rect = connector.current.getBoundingClientRect();
+			return [rect.x + ConnectorRadius, rect.y + ConnectorRadius];
+		}
+		else {
+			return [0, 0];
+		}
 	}
 
 	render() {
@@ -61,7 +103,7 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 		const context: EditorContextType = {
 			onClick: (name: ConnectorName) => {
 				console.log("Clicked " + name);
-				const ref = this.connectorRefs[`${name[0]}/${name[1]}`];
+				const ref = this.connectorRefs[`${name[0]}-${name[1]}`];
 				if (ref && ref.current) {
 					ref.current.style.backgroundColor = "red";
 					console.log(ref.current.getBoundingClientRect());
@@ -69,7 +111,7 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 			},
 			onRef: (name: ConnectorName) => {
 				const ref = React.createRef<HTMLDivElement>();
-				this.connectorRefs[`${name[0]}/${name[1]}`] = ref;
+				this.connectorRefs[`${name[0]}-${name[1]}`] = ref;
 				return ref;
 			}
 		}
