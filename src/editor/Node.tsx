@@ -73,7 +73,6 @@ export const Node = withStyles(styles)(class extends React.Component<NodeProps, 
 	}
 
 	render() {
-		console.log(this.props);
 		return <Draggable handle={`.${this.props.classes.handle}`} onDrag={() => this.context.onMoveNode(this.props.id)}>
 			<Paper className={this.props.classes.node} elevation={2}>
 				<div className={this.props.classes.handle}>

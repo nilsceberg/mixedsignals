@@ -1,7 +1,7 @@
 import React from "react";
 
 export interface EditorContextType {
-	onClick: (name: ConnectorName) => void;
+	onClick: (name: ConnectorName, direction: "input" | "output") => void;
 	onRef: (name: ConnectorName) => React.RefObject<HTMLDivElement>;
 	onMoveNode: (id: string) => void,
 }

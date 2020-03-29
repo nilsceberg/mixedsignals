@@ -32,25 +32,30 @@ export interface EditorProps {
 }
 
 interface EditorState {
-	mouse: [number, number];
+	connectFrom: ConnectorName | null;
+	sourceDirection: "input" | "output";
 }
 
 export const Editor = withStyles(styles)(class extends React.Component<EditorProps & { classes: Classes }, EditorState> {
 	private connectorRefs: { [name: string]: React.RefObject<HTMLDivElement> } = {};
-
 	private graph: React.RefObject<SVGSVGElement> = React.createRef();
+	private lastMouseCoords: [number, number] = [0, 0];
 
 	constructor(props: EditorProps & { classes: Classes }) {
 		super(props);
+
+		this.state = {
+			connectFrom: null,
+			sourceDirection: "input",
+		};
 	}
 
 	componentDidMount() {
 		window.onmousemove = (event: MouseEvent) => {
-			const path: SVGPathElement = this.graph.current?.getElementById("mousepath") as SVGPathElement;
-			if (path) {
-				const x = event.clientX;
-				const y = event.clientY;
-				path.setAttribute("d", `M 100 100 C 160 100, ${x - 60} ${y}, ${x} ${y}`)
+			this.lastMouseCoords = [event.clientX, event.clientY];
+
+			if (this.state.connectFrom) {
+				this.drawDanglingConnection([event.clientX, event.clientY]);
 			}
 		};
 
@@ -62,6 +67,18 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 	componentDidUpdate() {
 		for (const connection of this.props.graph) {
 			this.drawConnection(connection);
+		}
+	}
+
+	bezier([x1, y1]: [number, number], [x2, y2]: [number, number]): string {
+		return `M ${x1} ${y1} C ${x1 + 100} ${y1}, ${x2 - 100} ${y2}, ${x2} ${y2}`;
+	}
+
+	drawDanglingConnection(mouse: [number, number]) {
+		const path: SVGPathElement = this.graph.current?.getElementById("mousepath") as SVGPathElement;
+		if (path && this.state.connectFrom) {
+			const connector = this.getConnectorCoordinates(this.state.connectFrom);
+			path.setAttribute("d", this.bezier(connector, mouse));
 		}
 	}
 
@@ -77,11 +94,10 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 				this.graph.current.appendChild(path);
 			}
 
-			const [x1, y1] = this.getConnectorCoordinates(connection[0]);
-			const [x2, y2] = this.getConnectorCoordinates(connection[1]);
+			const a = this.getConnectorCoordinates(connection[0]);
+			const b = this.getConnectorCoordinates(connection[1]);
 
-			path.setAttribute("d", `M ${x1} ${y1} C ${x1 + 100} ${y1}, ${x2 - 100} ${y2}, ${x2} ${y2}`)
-			console.log("set attribute for " + id + " to " + path.getAttribute("d"));
+			path.setAttribute("d", this.bezier(a, b));
 		}
 	}
 
@@ -89,7 +105,8 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 		return `${connection[0][0]}-${connection[0][1]}_${connection[1][0]}-${connection[1][1]}`;
 	}
 
-	getConnectorCoordinates(name: ConnectorName): [number, number] {
+	getConnectorCoordinates(name: ConnectorName | null): [number, number] {
+		if (name === null) return [0, 0];
 		const key = `${name[0]}-${name[1]}`;
 		const connector = this.connectorRefs[key];
 		if (connector && connector.current) {
@@ -101,6 +118,35 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 		}
 	}
 
+	isEndpoint(name: ConnectorName, connection: Connection): boolean {
+		return (name[0] === connection[0][0] && name[1] === connection[0][1])
+			|| (name[0] === connection[1][0] && name[1] === connection[1][1]);
+	}
+
+	connectionsTo(name: ConnectorName): Connection[] {
+		return this.props.graph.filter(
+			c => this.isEndpoint(name, c)
+		);
+	}
+	
+	getRef(name: ConnectorName): React.RefObject<HTMLDivElement> {
+		return this.connectorRefs[`${name[0]}-${name[1]}`];
+	}
+
+	remote(connection: Connection, here: ConnectorName): ConnectorName {
+		if (here[0] === connection[0][0] && here[1] === connection[0][1]) {
+			return connection[1];
+		}
+		else {
+			return connection[0];
+		}
+	}
+
+	//componentWillUpdate() {
+	//	console.log("update hook");
+	//	this.drawDanglingConnection(this.lastMouseCoords);
+	//}
+
 	render() {
 		const classes = this.props.classes;
 
@@ -109,13 +155,74 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 		];
 
 		const context: EditorContextType = {
-			onClick: (name: ConnectorName) => {
-				console.log("Clicked " + name);
-				const ref = this.connectorRefs[`${name[0]}-${name[1]}`];
-				if (ref && ref.current) {
-					ref.current.style.backgroundColor = "red";
-					console.log(ref.current.getBoundingClientRect());
+			onClick: (name: ConnectorName, direction: "input" | "output") => {
+				if (this.state.connectFrom) {
+					// Can't connect input <-> input or output <-> output
+					if (direction === this.state.sourceDirection) return;
+
+					// Trigger connection creation event
+					console.log("onConnectionCreated")
+					if (direction === "input") {
+						// If there is already a connection here, grab that connection,
+						// since inputs can only have one connection
+
+						// Trigger onConnectionDeleted
+						console.log("onConnectionDeleted");
+						
+						const existing = this.connectionsTo(name);
+						if (existing.length === 1) {
+							const remote = this.remote(existing[0], name);
+							const ref = this.getRef(remote);
+							console.log(remote, ref);
+
+							this.setState({
+								connectFrom: remote,
+								sourceDirection: direction,
+							});
+						}
+					}
+					else {
+						// Otherwise, simply conclude the edit
+						this.setState({
+							connectFrom: null
+						});
+					}
 				}
+				else {
+					if (direction === "input") {
+						// If there is already a connection here, grab that connection,
+						// since inputs can only have one connection
+
+						// Trigger onConnectionDeleted
+						console.log("onConnectionDeleted");
+
+						const existing = this.connectionsTo(name);
+						if (existing.length === 1) {
+							const remote = this.remote(existing[0], name);
+							const ref = this.getRef(remote);
+							console.log(remote, ref);
+
+							this.setState({
+								connectFrom: remote,
+								sourceDirection: direction,
+							});
+						}
+					}
+					else {
+						// Otherwise, simply make a new connection
+						this.setState({
+							connectFrom: name,
+							sourceDirection: direction,
+						});
+					}
+				}
+
+				//console.log("Clicked " + name);
+				//const ref = this.connectorRefs[`${name[0]}-${name[1]}`];
+				//if (ref && ref.current) {
+				//	ref.current.style.backgroundColor = "red";
+				//	console.log(ref.current.getBoundingClientRect());
+				//}
 			},
 			onRef: (name: ConnectorName) => {
 				const ref = React.createRef<HTMLDivElement>();
@@ -135,8 +242,8 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 		return <EditorContext.Provider value={context}>
 			<div className={classes.editor}>
 				{/*<Graph a={[100, 100]} b={this.state.mouse}/>*/}
-				<svg className={classes.graph} ref={this.graph}>
-					<path id="mousepath" d={`M 100 100 C 160 100, 400 400, 460 400`} stroke="none" fill="none"/>
+				<svg className={classes.graph} ref={this.graph} onClick={event => { console.log("edit cancelled", event.target); this.setState({ connectFrom: null }) }}>
+					<path id="mousepath" d={this.bezier(this.getConnectorCoordinates(this.state.connectFrom), this.lastMouseCoords)} stroke={this.state.connectFrom ? "white" : "none"} fill="none"/>
 				</svg>
 				{this.props.children}
 			</div>

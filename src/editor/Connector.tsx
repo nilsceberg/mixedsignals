@@ -55,12 +55,11 @@ export const Connector = withStyles(styles)(class extends React.Component<Connec
 	static contextType = EditorContext;
 
 	render() {
-		console.log("render connector");
 		const classes = this.props.classes;
 		return <div className={classes.container}>
 				<div className={classes.dummy}/>
 				<div className={classes.label}>{this.props.name}</div>
-				<div className={classes.connector} onClick={() => this.context.onClick([this.props.node, this.props.name])} ref={this.context.onRef([this.props.node, this.props.name])}></div>
+				<div className={classes.connector} onClick={() => this.context.onClick([this.props.node, this.props.name], this.props.type)} ref={this.context.onRef([this.props.node, this.props.name])}></div>
 			</div>;
 	}
 });
