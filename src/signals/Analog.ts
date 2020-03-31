@@ -11,7 +11,13 @@ export class AnalogOutput implements Output {
 	}
 
 	sample(): number {
-		return this.process(time());
+		let s = this.process(time());
+		if (isNaN(s)) {
+			return 0;
+		}
+		else {
+			return s;
+		}
 	}
 }
 
