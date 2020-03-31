@@ -10,6 +10,10 @@ import { Editor } from "./editor/Editor";
 import { Node } from "./editor/Node";
 import { Visualizer } from "./nodes/Visualizer";
 import { Connection, connectionEquals } from "./editor/Types";
+import { Sine } from "./processing/analog/Sine";
+import { Sampler } from "./processing/analog/Sampler";
+import { SineNode } from "./nodes/SineNode";
+import { SamplerNode } from "./nodes/SamplerNode";
 
 const styles = (theme: Theme) => createStyles({
 	bar: {
@@ -36,6 +40,9 @@ const styles = (theme: Theme) => createStyles({
 	}
 });
 
+const sine = new Sine();
+const sampler = new Sampler();
+
 export const App = withStyles(styles)((props: { classes: Classes }) => {
 	const [ theme, setTheme ] = useState(createMuiTheme({
 		palette: {
@@ -44,7 +51,7 @@ export const App = withStyles(styles)((props: { classes: Classes }) => {
 	}));
 
 	const [ graph, setGraph ] = useState<Connection[]>([
-		[["source", "signal"], ["fourier", "input"]],
+		//[["source", "signal"], ["fourier", "input"]],
 	]);
 
 	const addConnection = (connection: Connection) => {
@@ -77,11 +84,10 @@ export const App = withStyles(styles)((props: { classes: Classes }) => {
 				</Box>
 			</AppBar>
 			<Editor graph={graph} onConnectionCreated={addConnection} onConnectionDeleted={removeConnection}>
-				<Node id="source" name="Sine Wave" io={[{type: "output", name: "signal"}]}>
-					<TextField size="small" variant="outlined" label="Frequency (Hz)" type="number"/><br/>
-					<TextField size="small" variant="outlined" label="Amplitude" type="number"/><br/>
-					<TextField size="small" variant="outlined" label="Phase (rad)" type="number"/>
-				</Node>
+				<SineNode process={sine}/>
+				<SamplerNode process={sampler}/>
+
+
 				<Node id="sum" name="Sum" io={[
 					{ type: "input", name: "input0" },
 					{ type: "input", name: "input1" },
