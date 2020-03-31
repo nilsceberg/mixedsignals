@@ -36,13 +36,16 @@ export class GraphNode extends React.Component<NodeProps<Graph>, { largest: numb
 				<Scatter data={{
 					datasets: [{
 						label: "signal",
-						fill: true,
+						fill: false,
+						showLine: true,
+						backgroundColor: "#fff",
+						tension: 0,
+						borderWidth: 2,
+						borderColor: "#aaa",
 						data: this.props.process.samples.map((y, n) => ({x: n - this.props.process.samples.length, y: y})),
 					}]
 				}} options={{
-					animation: {
-						duration: 0,
-					},
+					animation: false,
 					scales: {
 						xAxes: [{
 							ticks: {
