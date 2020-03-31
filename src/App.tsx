@@ -22,6 +22,8 @@ import { AnalogSumNode } from "./nodes/AnalogSumNode";
 import { Display } from "./processing/digital/Display";
 import { DisplayNode } from "./nodes/DisplayNode";
 import { Output, Input } from "./signals/IO";
+import { Delay } from "./processing/digital/Delay";
+import { DelayNode } from "./nodes/DelayNode";
 
 const styles = (theme: Theme) => createStyles({
 	bar: {
@@ -53,7 +55,10 @@ const state: {[id: string]: any} = observable({
 	"source2": new Sine(),
 	"sum": new AnalogSum(),
 	"sampler": new Sampler(),
-	"display": new Display(),
+	"display1": new Display(),
+	"display2": new Display(),
+	"delay1": new Delay(),
+	"delay2": new Delay(),
 }, {}, { deep: false });
 
 export const App = observer(withStyles(styles)((props: { classes: Classes }) => {
@@ -121,6 +126,9 @@ export const App = observer(withStyles(styles)((props: { classes: Classes }) => 
 		}
 		else if (process instanceof Display) {
 			ProcessNode = DisplayNode;
+		}
+		else if (process instanceof Delay) {
+			ProcessNode = DelayNode;
 		}
 
 		if (ProcessNode) {

@@ -8,7 +8,7 @@ import { NodeProps } from "./Node";
 import { SignalType } from "../editor/Types";
 
 export const AnalogSumNode = observer((props: NodeProps<AnalogSum>) => {
-	return <Node name="Sum" io={[
+	return <Node name="Analog Sum" io={[
 		{direction: "input", name: "a", type: SignalType.Analog},
 		{direction: "input", name: "b", type: SignalType.Analog},
 		{direction: "output", name: "sum", type: SignalType.Analog},

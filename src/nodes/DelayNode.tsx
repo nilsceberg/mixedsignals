@@ -7,8 +7,8 @@ import { NodeProps } from "./Node";
 import { SignalType } from "../editor/Types";
 import { Display } from "../processing/digital/Display";
 
-export const DisplayNode = observer((props: NodeProps<Display>) => {
-	return <Node name="Display" io={[{direction: "input", name: "signal", type: SignalType.Digital}]} {...props}>
-		<TextField disabled value={props.process.last} size="small" variant="outlined" label="Signal" type="number"/><br/>
+export const DelayNode = observer((props: NodeProps<Display>) => {
+	return <Node name="Delay (z⁻¹)" io={[{direction: "input", name: "input", type: SignalType.Digital}, {direction: "output", name: "output", type: SignalType.Digital}]} {...props}>
 	</Node>;
 });
+
