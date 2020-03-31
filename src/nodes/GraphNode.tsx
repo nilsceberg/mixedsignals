@@ -40,6 +40,9 @@ export class GraphNode extends React.Component<NodeProps<Graph>, { largest: numb
 						data: this.props.process.samples.map((y, n) => ({x: n - this.props.process.samples.length, y: y})),
 					}]
 				}} options={{
+					animation: {
+						duration: 0,
+					},
 					scales: {
 						xAxes: [{
 							ticks: {
