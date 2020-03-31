@@ -23,7 +23,7 @@ export class Memory {
 			this.memory.shift();
 			this.memory.push(x);
 			this.buffer.write({
-				samples: this.memory,
+				samples: this.memory.slice(),
 				length: this.length,
 			});
 		}));
