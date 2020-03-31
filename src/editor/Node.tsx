@@ -84,12 +84,12 @@ export const Node = withStyles(styles)(class extends React.Component<NodeProps, 
 				</div>
 				<Connectors>
 					<Inputs>
-						{this.props.io.filter(c => c.type === "input").map(props =>
+						{this.props.io.filter(c => c.direction === "input").map(props =>
 							<Connector {...props} node={this.props.id} key={props.name}/>
 						)}
 					</Inputs>
 					<Outputs>
-						{this.props.io.filter(c => c.type === "output").map(props =>
+						{this.props.io.filter(c => c.direction === "output").map(props =>
 							<Connector {...props} node={this.props.id} key={props.name}/>
 						)}
 					</Outputs>

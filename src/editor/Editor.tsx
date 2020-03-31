@@ -5,6 +5,7 @@ import { Node } from "./Node";
 import { Graph, ConnectorName, Connection } from "./Types";
 import { EditorContextType, EditorContext } from "./Types";
 import { ConnectorRadius } from "./Connector";
+import { type } from "os";
 //import { Graph } from "./Graph";
 
 const styles = (theme: Theme) => createStyles({
@@ -32,11 +33,13 @@ export interface EditorProps {
 	children?: React.ReactNode;
 	onConnectionCreated?: (connection: Connection) => void;
 	onConnectionDeleted?: (connection: Connection) => void;
+	colors: { [type: string]: string };
 }
 
 interface EditorState {
 	connectFrom: ConnectorName | null;
 	sourceDirection: "input" | "output";
+	sourceType: string;
 }
 
 export const Editor = withStyles(styles)(class extends React.Component<EditorProps & { classes: Classes }, EditorState> {
@@ -50,6 +53,7 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 		this.state = {
 			connectFrom: null,
 			sourceDirection: "input",
+			sourceType: "",
 		};
 	}
 
@@ -176,10 +180,13 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 		];
 
 		const context: EditorContextType = {
-			onClick: (name: ConnectorName, direction: "input" | "output") => {
+			onClick: (name: ConnectorName, direction: "input" | "output", type: string) => {
 				if (this.state.connectFrom) {
 					// Can't connect input <-> input or output <-> output
 					if (direction === this.state.sourceDirection) return;
+
+					// And we can only connect connectors of the same type
+					if (type !== this.state.sourceType) return;
 
 					// Trigger connection creation event
 					if (direction === "input") {
@@ -224,6 +231,7 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 							this.setState({
 								connectFrom: remote,
 								sourceDirection: "output",
+								sourceType: type,
 							});
 						}
 						else {
@@ -257,6 +265,7 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 							this.setState({
 								connectFrom: remote,
 								sourceDirection: "output",
+								sourceType: type,
 							});
 						}
 						else {
@@ -264,6 +273,7 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 							this.setState({
 								connectFrom: name,
 								sourceDirection: direction,
+								sourceType: type,
 							});
 						}
 					}
@@ -272,6 +282,7 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 						this.setState({
 							connectFrom: name,
 							sourceDirection: direction,
+							sourceType: type,
 						});
 					}
 				}
@@ -295,7 +306,8 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 						this.drawConnection(connection);
 					}
 				}
-			}
+			},
+			typeColors: this.props.colors,
 		}
 
 		return <EditorContext.Provider value={context}>

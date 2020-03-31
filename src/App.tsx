@@ -9,7 +9,7 @@ import { Line, Scatter } from "react-chartjs-2";
 import { Editor } from "./editor/Editor";
 import { Node } from "./editor/Node";
 import { Visualizer } from "./nodes/Visualizer";
-import { Connection, connectionEquals } from "./editor/Types";
+import { Connection, connectionEquals, SignalType } from "./editor/Types";
 import { Sine } from "./processing/analog/Sine";
 import { Sampler } from "./processing/analog/Sampler";
 import { SineNode } from "./nodes/SineNode";
@@ -19,6 +19,9 @@ import { observable } from "mobx";
 import { AnalogOutput, AnalogInput } from "./signals/Analog";
 import { AnalogSum } from "./processing/analog/AnalogSum";
 import { AnalogSumNode } from "./nodes/AnalogSumNode";
+import { Display } from "./processing/digital/Display";
+import { DisplayNode } from "./nodes/DisplayNode";
+import { Output, Input } from "./signals/IO";
 
 const styles = (theme: Theme) => createStyles({
 	bar: {
@@ -50,6 +53,7 @@ const state: {[id: string]: any} = observable({
 	"source2": new Sine(),
 	"sum": new AnalogSum(),
 	"sampler": new Sampler(),
+	"display": new Display(),
 }, {}, { deep: false });
 
 export const App = observer(withStyles(styles)((props: { classes: Classes }) => {
@@ -67,8 +71,8 @@ export const App = observer(withStyles(styles)((props: { classes: Classes }) => 
 		const [outputConnector, inputConnector] = connection;
 
 		// We assume that all parts of this connection exist
-		const output: AnalogOutput = state[outputConnector[0]][outputConnector[1]];
-		const input: AnalogInput = state[inputConnector[0]][inputConnector[1]];
+		const output: Output = state[outputConnector[0]][outputConnector[1]];
+		const input: Input<Output> = state[inputConnector[0]][inputConnector[1]];
 
 		input.connect(output);
 
@@ -81,8 +85,8 @@ export const App = observer(withStyles(styles)((props: { classes: Classes }) => 
 		const [outputConnector, inputConnector] = connection;
 
 		// We assume that all parts of this connection exist
-		const output: AnalogOutput = state[outputConnector[0]][outputConnector[1]];
-		const input: AnalogInput = state[inputConnector[0]][inputConnector[1]];
+		const output: Output = state[outputConnector[0]][outputConnector[1]];
+		const input: Input<Output> = state[inputConnector[0]][inputConnector[1]];
 
 		// Before disconnecting, we need to check that the existing connection
 		// actually is the one we want to remove. When swappnig a connection at
@@ -115,6 +119,9 @@ export const App = observer(withStyles(styles)((props: { classes: Classes }) => 
 		else if (process instanceof AnalogSum) {
 			ProcessNode = AnalogSumNode;
 		}
+		else if (process instanceof Display) {
+			ProcessNode = DisplayNode;
+		}
 
 		if (ProcessNode) {
 			nodes.push(<ProcessNode id={id} process={process}/>);
@@ -136,7 +143,11 @@ export const App = observer(withStyles(styles)((props: { classes: Classes }) => 
 					}}/>}/>
 				</Box>
 			</AppBar>
-			<Editor graph={graph} onConnectionCreated={addConnection} onConnectionDeleted={removeConnection}>
+			<Editor graph={graph} onConnectionCreated={addConnection} onConnectionDeleted={removeConnection} colors={{
+				[SignalType.Analog]: "yellow",
+				[SignalType.Digital]: "blue",
+				[SignalType.Buffer]: "red",
+			}}>
 				{nodes}
 			</Editor>
 		</ThemeProvider>

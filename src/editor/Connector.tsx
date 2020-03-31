@@ -4,7 +4,8 @@ import { ConnectorName, EditorContext, EditorContextType } from "./Types";
 import { Classes } from "@material-ui/styles/mergeClasses/mergeClasses";
 
 export interface ConnectorProps {
-	type: "input" | "output",
+	direction: "input" | "output",
+	type: string,
 	name: string,
 	node: string,
 	onConnect?: (me: ConnectorName, remote: ConnectorName) => boolean,
@@ -17,17 +18,17 @@ const styles = (theme: Theme) => createStyles({
 		boxSizing: "border-box",
 		flexBasis: "80%",
 		display: "flex",
-		flexDirection: (props: ConnectorProps) => props.type === "output" ? "row" : "row-reverse",
+		flexDirection: (props: ConnectorProps) => props.direction === "output" ? "row" : "row-reverse",
 		marginBottom: theme.spacing(1),
 		position: "relative",
-		right: (props: ConnectorProps) => props.type === "output" ? `-${ConnectorRadius}px` : undefined,
-		left: (props: ConnectorProps) => props.type === "input" ? `-${ConnectorRadius}px` : undefined,
+		right: (props: ConnectorProps) => props.direction === "output" ? `-${ConnectorRadius}px` : undefined,
+		left: (props: ConnectorProps) => props.direction === "input" ? `-${ConnectorRadius}px` : undefined,
 	},
 	dummy: {
 		flexGrow: 1,
 	},
 	label: {
-		textAlign: (props: ConnectorProps) => props.type === "output" ? "right" : "left",
+		textAlign: (props: ConnectorProps) => props.direction === "output" ? "right" : "left",
 		marginLeft: theme.spacing(0.5),
 		marginRight: theme.spacing(0.5),
 		boxSizing: "border-box",
@@ -41,7 +42,7 @@ const styles = (theme: Theme) => createStyles({
 	},
 	connector: {
 		flexGrow: 0,
-		backgroundColor: colors.yellow[400],
+		backgroundColor: "white", //colors.yellow[400],
 		boxSizing: "border-box",
 		width: `${2 * ConnectorRadius}px`,
 		height: `${2 * ConnectorRadius}px`,
@@ -56,10 +57,11 @@ export const Connector = withStyles(styles)(class extends React.Component<Connec
 
 	render() {
 		const classes = this.props.classes;
+		const backgroundColor = this.props.type in this.context.typeColors ? this.context.typeColors[this.props.type] : "white";
 		return <div className={classes.container}>
 				<div className={classes.dummy}/>
 				<div className={classes.label}>{this.props.name}</div>
-				<div className={classes.connector} onClick={() => this.context.onClick([this.props.node, this.props.name], this.props.type)} ref={this.context.onRef([this.props.node, this.props.name])}></div>
+				<div className={classes.connector} style={{ backgroundColor }} onClick={() => this.context.onClick([this.props.node, this.props.name], this.props.direction, this.props.type)} ref={this.context.onRef([this.props.node, this.props.name])}></div>
 			</div>;
 	}
 });

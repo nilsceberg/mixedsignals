@@ -1,8 +1,9 @@
 import { time } from "../processing/util";
+import { Input, Output } from "./IO";
 
 export type AnalogProcess = (t: number) => number;
 
-export class AnalogOutput {
+export class AnalogOutput implements Output {
 	private process: AnalogProcess;
 
 	constructor(process: AnalogProcess) {
@@ -14,7 +15,7 @@ export class AnalogOutput {
 	}
 }
 
-export class AnalogInput {
+export class AnalogInput implements Input<AnalogOutput> {
 	private remote: AnalogOutput | null = null;
 
 	constructor(remote?: AnalogOutput) {

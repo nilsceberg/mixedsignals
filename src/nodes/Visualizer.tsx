@@ -3,6 +3,7 @@ import React from "react";
 import { Scatter } from "react-chartjs-2";
 
 import { Node } from "../editor/Node";
+import { SignalType } from "../editor/Types";
 
 const linspace = (a: number, b: number, n: number): number[] => {
 	const space = [];
@@ -38,7 +39,7 @@ export class Visualizer extends React.Component<{}, { t: number }> {
 
 	render() {
 		return <Node id="visualizer" name="Visualizer" io={[
-			{ type: "input", name: "signal" }
+			{ direction: "input", name: "signal", type: SignalType.Buffer }
 		]}>
 			<Scatter data={{
 				datasets: [{

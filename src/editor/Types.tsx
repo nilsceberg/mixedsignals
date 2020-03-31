@@ -1,15 +1,23 @@
 import React from "react";
 
+export enum SignalType {
+	Analog = "analog",
+	Digital = "digital",
+	Buffer = "buffer",
+}
+
 export interface EditorContextType {
-	onClick: (name: ConnectorName, direction: "input" | "output") => void;
+	onClick: (name: ConnectorName, direction: "input" | "output", type: string) => void;
 	onRef: (name: ConnectorName) => React.RefObject<HTMLDivElement>;
 	onMoveNode: (id: string) => void,
+	typeColors: { [type: string]: string },
 }
 
 export const EditorContext = React.createContext<EditorContextType>({
 	onClick: () => {},
 	onRef: () => React.createRef(),
 	onMoveNode: () => {},
+	typeColors: {}
 });
 
 
