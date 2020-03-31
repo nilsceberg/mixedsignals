@@ -1,10 +1,11 @@
-import { AnalogInput } from "../../signals/Analog";
+import { AnalogInput, AnalogOutput } from "../../signals/Analog";
 import { DigitalOutput } from "../../signals/Digital";
 import { observable } from "mobx";
 
 export class Sampler {
 	public readonly analog: AnalogInput;
 	public readonly digital: DigitalOutput;
+	public readonly meta_freq: AnalogOutput;
 
 	@observable
 	public frequency: number = 1;
@@ -15,6 +16,7 @@ export class Sampler {
 	constructor() {
 		this.analog = new AnalogInput();
 		this.digital = new DigitalOutput();
+		this.meta_freq = new AnalogOutput(() => this.frequency);
 
 		const sample = () => {
 			if (this.frequency === 0 || isNaN(this.frequency)) {

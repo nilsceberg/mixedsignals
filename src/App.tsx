@@ -27,6 +27,8 @@ import { DelayNode } from "./nodes/DelayNode";
 import { Graph } from "./processing/digital/Graph";
 import { Memory } from "./processing/digital/Memory";
 import { MemoryNode } from "./nodes/MemoryNode";
+import { Constant } from "./processing/analog/Constant";
+import { ConstantNode } from "./nodes/ConstantNode";
 
 const styles = (theme: Theme) => createStyles({
 	bar: {
@@ -64,6 +66,7 @@ const state: {[id: string]: any} = observable({
 	"delay2": new Delay(),
 	"graph": new Graph(),
 	"memory": new Memory(20),
+	"constant": new Constant(),
 }, {}, { deep: false });
 
 export const App = observer(withStyles(styles)((props: { classes: Classes }) => {
@@ -140,6 +143,9 @@ export const App = observer(withStyles(styles)((props: { classes: Classes }) => 
 		}
 		else if (process instanceof Graph) {
 			ProcessNode = GraphNode;
+		}
+		else if (process instanceof Constant) {
+			ProcessNode = ConstantNode;
 		}
 
 		if (ProcessNode) {
