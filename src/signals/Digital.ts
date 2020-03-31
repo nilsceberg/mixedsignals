@@ -1,12 +1,12 @@
 import * as uuid from "uuid";
 import { Input, Output } from "./IO";
 
-export type DigitalProcess = (t: number) => void;
+type PushProcess<T> = (t: T) => void;
 
-export class DigitalOutput implements Output {
-	private connected: { [id: string]: DigitalProcess } = {};
+class PushOutput<T> implements Output {
+	private connected: { [id: string]: PushProcess<T> } = {};
 
-	public _registerInput(id: string, process: DigitalProcess) {
+	public _registerInput(id: string, process: PushProcess<T>) {
 		this.connected[id] = process;
 	}
 
@@ -14,24 +14,24 @@ export class DigitalOutput implements Output {
 		delete this.connected[id];
 	}
 
-	public write(x: number) {
+	public write(x: T) {
 		for (const id in this.connected) {
 			this.connected[id](x);
 		}
 	}
 }
 
-export class DigitalInput implements Input<DigitalOutput> {
-	private remote: DigitalOutput | null = null;
-	private process: (x: number) => void;
+class PushInput<T> implements Input<PushOutput<T>> {
+	private remote: PushOutput<T> | null = null;
+	private process: PushProcess<T>;
 	private id: string = uuid.v4();
 
-	constructor(process: DigitalProcess) {
+	constructor(process: PushProcess<T>) {
 		this.process = process;
 		this.remote = null;
 	}
 
-	public connect(remote: DigitalOutput | null) {
+	public connect(remote: PushOutput<T> | null) {
 		if (this.remote) {
 			this.remote._deregisterInput(this.id);
 		}
@@ -43,7 +43,20 @@ export class DigitalInput implements Input<DigitalOutput> {
 		}
 	}
 
-	public getRemote(): DigitalOutput | null {
+	public getRemote(): PushOutput<T> | null {
 		return this.remote;
 	}
 }
+
+export type DigitalProcess = PushProcess<number>;
+export class DigitalOutput extends PushOutput<number> {};
+export class DigitalInput extends PushInput<number> {};
+
+export interface SignalBuffer {
+	samples: number[];
+	length: number;
+}
+export type BufferProcess = PushProcess<SignalBuffer>;
+export class BufferOutput extends PushOutput<SignalBuffer> {};
+export class BufferInput extends PushInput<SignalBuffer> {};
+

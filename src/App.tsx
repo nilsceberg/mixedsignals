@@ -8,7 +8,7 @@ import { Classes } from "@material-ui/styles/mergeClasses/mergeClasses";
 import { Line, Scatter } from "react-chartjs-2";
 import { Editor } from "./editor/Editor";
 import { Node } from "./editor/Node";
-import { Visualizer } from "./nodes/Visualizer";
+import { GraphNode } from "./nodes/GraphNode";
 import { Connection, connectionEquals, SignalType } from "./editor/Types";
 import { Sine } from "./processing/analog/Sine";
 import { Sampler } from "./processing/analog/Sampler";
@@ -24,6 +24,9 @@ import { DisplayNode } from "./nodes/DisplayNode";
 import { Output, Input } from "./signals/IO";
 import { Delay } from "./processing/digital/Delay";
 import { DelayNode } from "./nodes/DelayNode";
+import { Graph } from "./processing/digital/Graph";
+import { Memory } from "./processing/digital/Memory";
+import { MemoryNode } from "./nodes/MemoryNode";
 
 const styles = (theme: Theme) => createStyles({
 	bar: {
@@ -59,6 +62,8 @@ const state: {[id: string]: any} = observable({
 	"display2": new Display(),
 	"delay1": new Delay(),
 	"delay2": new Delay(),
+	"graph": new Graph(),
+	"memory": new Memory(20),
 }, {}, { deep: false });
 
 export const App = observer(withStyles(styles)((props: { classes: Classes }) => {
@@ -129,6 +134,12 @@ export const App = observer(withStyles(styles)((props: { classes: Classes }) => 
 		}
 		else if (process instanceof Delay) {
 			ProcessNode = DelayNode;
+		}
+		else if (process instanceof Memory) {
+			ProcessNode = MemoryNode;
+		}
+		else if (process instanceof Graph) {
+			ProcessNode = GraphNode;
 		}
 
 		if (ProcessNode) {

@@ -2,7 +2,7 @@ import React from "react";
 import { Theme, makeStyles, Paper, TextField, InputLabel, AppBar, Typography, createStyles, withStyles } from "@material-ui/core";
 import { Classes } from "@material-ui/styles/mergeClasses/mergeClasses";
 import { Node } from "./Node";
-import { Graph, ConnectorName, Connection } from "./Types";
+import { ConnectorName, Connection } from "./Types";
 import { EditorContextType, EditorContext } from "./Types";
 import { ConnectorRadius } from "./Connector";
 import { type } from "os";
@@ -174,10 +174,6 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 
 	render() {
 		const classes = this.props.classes;
-
-		const graph: Graph = [
-			[["source","signal"], ["visualizer","signal"]]
-		];
 
 		const context: EditorContextType = {
 			onClick: (name: ConnectorName, direction: "input" | "output", type: string) => {
