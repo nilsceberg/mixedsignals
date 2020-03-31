@@ -25,6 +25,10 @@ export class AnalogInput {
 		this.remote = remote;
 	}
 
+	public getRemote(): AnalogOutput | null {
+		return this.remote;
+	}
+
 	sample(): number {
 		if (this.remote !== null) {
 			return this.remote.sample();

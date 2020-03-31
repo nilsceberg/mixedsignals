@@ -14,6 +14,10 @@ import { Sine } from "./processing/analog/Sine";
 import { Sampler } from "./processing/analog/Sampler";
 import { SineNode } from "./nodes/SineNode";
 import { SamplerNode } from "./nodes/SamplerNode";
+import { observer } from "mobx-react";
+import { observable } from "mobx";
+import { DH_NOT_SUITABLE_GENERATOR } from "constants";
+import { AnalogOutput, AnalogInput } from "./signals/Analog";
 
 const styles = (theme: Theme) => createStyles({
 	bar: {
@@ -40,10 +44,12 @@ const styles = (theme: Theme) => createStyles({
 	}
 });
 
-const sine = new Sine();
-const sampler = new Sampler();
+const state: {[id: string]: any} = observable({
+	"source": new Sine(),
+	"sampler": new Sampler(),
+}, {}, { deep: false });
 
-export const App = withStyles(styles)((props: { classes: Classes }) => {
+export const App = observer(withStyles(styles)((props: { classes: Classes }) => {
 	const [ theme, setTheme ] = useState(createMuiTheme({
 		palette: {
 			type: "dark",
@@ -55,18 +61,59 @@ export const App = withStyles(styles)((props: { classes: Classes }) => {
 	]);
 
 	const addConnection = (connection: Connection) => {
+		const [outputConnector, inputConnector] = connection;
+
+		// We assume that all parts of this connection exist
+		const output: AnalogOutput = state[outputConnector[0]][outputConnector[1]];
+		const input: AnalogInput = state[inputConnector[0]][inputConnector[1]];
+
+		input.connect(output);
+
 		const newGraph = [...graph, connection];
 		console.log("new connection: ", newGraph);
 		setGraph(newGraph);
 	};
 
 	const removeConnection = (connection: Connection) => {
+		const [outputConnector, inputConnector] = connection;
+
+		// We assume that all parts of this connection exist
+		const output: AnalogOutput = state[outputConnector[0]][outputConnector[1]];
+		const input: AnalogInput = state[inputConnector[0]][inputConnector[1]];
+
+		// Before disconnecting, we need to check that the existing connection
+		// actually is the one we want to remove. When swappnig a connection at
+		// an input, the remove event is sent after the add event, which means that
+		// if we're not careful we'll disconnect the newly attached connection
+		// (which will also be inconsistent with the UI).
+
+		if (input.getRemote() === output) {
+			input.connect(null);
+		}
+
 		const newGraph = graph.filter(c => !(connectionEquals(c, connection)));
 		console.log("removed connection: ", newGraph);
 		setGraph(newGraph);
 	}
 
 	console.log(graph);
+
+	const nodes: React.ReactNode[] = [];
+	for (const id in state) {
+		const process = state[id];
+		let ProcessNode: any = null;
+
+		if (process instanceof Sampler) {
+			ProcessNode = SamplerNode;
+		}
+		else if (process instanceof Sine) {
+			ProcessNode = SineNode;
+		}
+
+		if (ProcessNode) {
+			nodes.push(<ProcessNode id={id} process={process}/>);
+		}
+	}
 
 	return <div className={ props.classes.app }>
 		<CssBaseline/>
@@ -84,32 +131,10 @@ export const App = withStyles(styles)((props: { classes: Classes }) => {
 				</Box>
 			</AppBar>
 			<Editor graph={graph} onConnectionCreated={addConnection} onConnectionDeleted={removeConnection}>
-				<SineNode process={sine}/>
-				<SamplerNode process={sampler}/>
-
-
-				<Node id="sum" name="Sum" io={[
-					{ type: "input", name: "input0" },
-					{ type: "input", name: "input1" },
-					{ type: "output", name: "sum" },
-				]}>
-				</Node>
-				<Node id="sum2" name="Sum" io={[
-					{ type: "input", name: "input0" },
-					{ type: "input", name: "input1" },
-					{ type: "output", name: "sum" },
-				]}>
-				</Node>
-				<Node id="fourier" name="Fourier Transform" io={[
-					{ type: "input", name: "input" },
-					{ type: "output", name: "mode0" },
-					{ type: "output", name: "mode1" },
-				]}>
-				</Node>
-				<Visualizer/>
+				{nodes}
 			</Editor>
 		</ThemeProvider>
 	</div>;
-});
+}));
 
 export default App;

@@ -2,13 +2,16 @@ import { AnalogInput } from "../../signals/Analog";
 import { observable } from "mobx";
 
 export class Sampler {
-	public readonly input: AnalogInput;
+	public readonly analog: AnalogInput;
 
 	@observable
 	public frequency: number = 1;
 
+	@observable
+	public lastSample: number = 0;
+
 	constructor() {
-		this.input = new AnalogInput();
+		this.analog = new AnalogInput();
 
 		const sample = () => {
 			if (this.frequency === 0 || isNaN(this.frequency)) {
@@ -16,7 +19,7 @@ export class Sampler {
 				return;
 			}
 
-			console.log("Sample: " + this.input.sample());
+			this.lastSample = this.analog.sample();
 			setTimeout(sample, 1.0 / this.frequency * 1000.0);
 		}
 
