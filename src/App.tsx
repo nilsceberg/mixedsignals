@@ -16,8 +16,9 @@ import { SineNode } from "./nodes/SineNode";
 import { SamplerNode } from "./nodes/SamplerNode";
 import { observer } from "mobx-react";
 import { observable } from "mobx";
-import { DH_NOT_SUITABLE_GENERATOR } from "constants";
 import { AnalogOutput, AnalogInput } from "./signals/Analog";
+import { AnalogSum } from "./processing/analog/AnalogSum";
+import { AnalogSumNode } from "./nodes/AnalogSumNode";
 
 const styles = (theme: Theme) => createStyles({
 	bar: {
@@ -45,7 +46,9 @@ const styles = (theme: Theme) => createStyles({
 });
 
 const state: {[id: string]: any} = observable({
-	"source": new Sine(),
+	"source1": new Sine(),
+	"source2": new Sine(),
+	"sum": new AnalogSum(),
 	"sampler": new Sampler(),
 }, {}, { deep: false });
 
@@ -108,6 +111,9 @@ export const App = observer(withStyles(styles)((props: { classes: Classes }) => 
 		}
 		else if (process instanceof Sine) {
 			ProcessNode = SineNode;
+		}
+		else if (process instanceof AnalogSum) {
+			ProcessNode = AnalogSumNode;
 		}
 
 		if (ProcessNode) {
