@@ -85,7 +85,7 @@ const styles = (theme: Theme) => createStyles({
 		//	duration: theme.transitions.duration.leavingScreen,
 		//}),
 		overflowX: 'hidden',
-		width: "48px",//width: theme.spacing(7) + 1,
+		width: "56px",//width: theme.spacing(7) + 1,
 		//[theme.breakpoints.up('sm')]: {
 		//	width: theme.spacing(9) + 1,
 		//},
@@ -132,7 +132,7 @@ export const App = withStyles(styles)(observer((props: { classes: Classes }) => 
 		//[["source", "signal"], ["fourier", "input"]],
 	]);
 
-	const [ open, setOpen ] = useState<boolean>(true);
+	const [ open, setOpen ] = useState<boolean>(false);
 
 	const addConnection = (connection: Connection) => {
 		const [outputConnector, inputConnector] = connection;
