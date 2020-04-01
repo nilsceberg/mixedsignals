@@ -10,6 +10,7 @@ import { EditorContext, EditorContextType } from "./Types";
 const styles = (theme: Theme) => createStyles({
 	node: {
 		//overflow: "hidden",
+		position: "absolute",
 		display: "inline-block",
 		width: "auto",
 		//overflowX: "auto",
