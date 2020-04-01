@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import logo from "./logo.svg";
 import Button from "@material-ui/core/Button";
-import "./App.css";
 import { CssBaseline, Theme, createMuiTheme, AppBar, Typography, Switch, FormControlLabel, Box, TextField } from "@material-ui/core";
 import { withStyles, ThemeProvider, createStyles } from "@material-ui/styles";
 import { Classes } from "@material-ui/styles/mergeClasses/mergeClasses";
@@ -39,6 +38,7 @@ import { RelayNode } from "./nodes/RelayNode";
 const styles = (theme: Theme) => createStyles({
 	bar: {
 		padding: "8px",
+		zIndex: 10000,
 	},
 	app: {
 		overflow: "hidden",
