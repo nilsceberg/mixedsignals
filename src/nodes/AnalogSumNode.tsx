@@ -17,4 +17,3 @@ export const AnalogSumNode = observer((props: NodeProps<AnalogSum>) => {
 		<TextField value={props.process.bw} onChange={event => props.process.bw = Number.parseFloat(event.target.value)} size="small" variant="outlined" label="Input B weight" type="number"/><br/>
 	</Node>;
 });
-

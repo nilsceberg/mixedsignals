@@ -31,6 +31,10 @@ import { Constant } from "./processing/analog/Constant";
 import { ConstantNode } from "./nodes/ConstantNode";
 import { RealtimeVisualizerNode } from "./nodes/RealtimeVisualizerNode";
 import { RealtimeVisualizer } from "./processing/digital/RealtimeVisualizer";
+import { DigitalSum } from "./processing/digital/DigitalSum";
+import { DigitalSumNode } from "./nodes/DigitalSumNode";
+import { Relay } from "./processing/digital/Relay";
+import { RelayNode } from "./nodes/RelayNode";
 
 const styles = (theme: Theme) => createStyles({
 	bar: {
@@ -68,8 +72,12 @@ const state: {[id: string]: any} = observable({
 	"delay2": new Delay(),
 	"graph": new Graph(),
 	"memory": new Memory(20),
-	"constant": new Constant(),
+	"constant1": new Constant(),
+	"constant2": new Constant(),
 	"realtime": new RealtimeVisualizer(),
+	"sum2": new DigitalSum(),
+	"sum3": new DigitalSum(),
+	"relay": new Relay(),
 }, {}, { deep: false });
 
 export const App = observer(withStyles(styles)((props: { classes: Classes }) => {
@@ -152,6 +160,12 @@ export const App = observer(withStyles(styles)((props: { classes: Classes }) => 
 		}
 		else if (process instanceof RealtimeVisualizer) {
 			ProcessNode = RealtimeVisualizerNode;
+		}
+		else if (process instanceof DigitalSum) {
+			ProcessNode = DigitalSumNode;
+		}
+		else if (process instanceof Relay) {
+			ProcessNode = RelayNode;
 		}
 
 		if (ProcessNode) {

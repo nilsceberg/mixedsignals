@@ -1,12 +1,9 @@
 import React from "react";
 import { Theme, makeStyles, Paper, TextField, InputLabel, AppBar, Typography, createStyles, withStyles } from "@material-ui/core";
 import { Classes } from "@material-ui/styles/mergeClasses/mergeClasses";
-import { Node } from "./Node";
 import { ConnectorName, Connection } from "./Types";
 import { EditorContextType, EditorContext } from "./Types";
 import { ConnectorRadius } from "./Connector";
-import { type } from "os";
-//import { Graph } from "./Graph";
 
 const styles = (theme: Theme) => createStyles({
 	editor: {

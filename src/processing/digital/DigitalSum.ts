@@ -2,10 +2,10 @@ import { AnalogInput, AnalogOutput } from "../../signals/Analog";
 import { observable } from "mobx";
 import { DigitalInput, DigitalOutput } from "../../signals/Digital";
 
-export class AnalogSum {
+export class DigitalSum {
 	public readonly a: DigitalInput;
 	public readonly b: DigitalInput;
-	public readonly sum: AnalogOutput;
+	public readonly sum: DigitalOutput;
 
 	@observable
 	public aw: number = 1;
@@ -20,9 +20,21 @@ export class AnalogSum {
 	private bv: number = 0;
 
 	constructor() {
-		this.a = new DigitalOutput();
-		this.b = new AnalogInput();
-		this.sum = new AnalogOutput(() => this.aw * this.a.sample() + this.bw * this.b.sample());
+		this.sum = new DigitalOutput();
+
+		this.a = new DigitalInput(x => {
+			this.av = x;
+			if (this.clock === "a") {
+				this.sum.write(this.aw * this.av + this.bw * this.bv);
+			}
+		});
+
+		this.b = new DigitalInput(x => {
+			this.bv = x;
+			if (this.clock === "b") {
+				this.sum.write(this.aw * this.av + this.bw * this.bv);
+			}
+		});
 	}
 
 }
