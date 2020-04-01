@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import logo from "./logo.svg";
 import Button from "@material-ui/core/Button";
-import { CssBaseline, Theme, createMuiTheme, AppBar, Typography, Switch, FormControlLabel, Box, TextField } from "@material-ui/core";
+import { CssBaseline, Theme, createMuiTheme, AppBar, Typography, Switch, FormControlLabel, Box, TextField, Drawer, IconButton, Divider, List, ListItemIcon, ListItem, ListItemText } from "@material-ui/core";
 import { withStyles, ThemeProvider, createStyles } from "@material-ui/styles";
 import { Classes } from "@material-ui/styles/mergeClasses/mergeClasses";
 import { Line, Scatter } from "react-chartjs-2";
@@ -34,6 +34,13 @@ import { DigitalSum } from "./processing/digital/DigitalSum";
 import { DigitalSumNode } from "./nodes/DigitalSumNode";
 import { Relay } from "./processing/digital/Relay";
 import { RelayNode } from "./nodes/RelayNode";
+import * as uuid from "uuid";
+
+import InboxIcon from "@material-ui/icons/Inbox";
+import MailIcon from "@material-ui/icons/Mail";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import clsx from "clsx";
 
 const styles = (theme: Theme) => createStyles({
 	bar: {
@@ -58,29 +65,63 @@ const styles = (theme: Theme) => createStyles({
 		flexGrow: 1,
 		height: "100%",
 		verticalAlign: "middle"
+	},
+	drawer: {
+		width: 250,
+		flexShrink: 0,
+		whiteSpace: 'nowrap',
+		paddingTop: "48px",
+	},
+	drawerOpen: {
+		width: 250,
+		//transition: theme.transitions.create('width', {
+		//	easing: theme.transitions.easing.sharp,
+		//	duration: theme.transitions.duration.enteringScreen,
+		//}),
+	},
+	drawerClose: {
+		//transition: theme.transitions.create('width', {
+		//	easing: theme.transitions.easing.sharp,
+		//	duration: theme.transitions.duration.leavingScreen,
+		//}),
+		overflowX: 'hidden',
+		width: "48px",//width: theme.spacing(7) + 1,
+		//[theme.breakpoints.up('sm')]: {
+		//	width: theme.spacing(9) + 1,
+		//},
+	},
+	toggle: {
+		marginTop: "48px",
 	}
 });
 
-const state: {[id: string]: any} = observable({
-	"source1": new Sine(),
-	"source2": new Sine(),
-	"sum": new AnalogSum(),
-	"sampler": new Sampler(),
-	"display1": new Display(),
-	"display2": new Display(),
-	"delay1": new Delay(),
-	"delay2": new Delay(),
-	"graph": new Graph(),
-	"memory": new Memory(20),
-	"constant1": new Constant(),
-	"constant2": new Constant(),
-	"realtime": new RealtimeVisualizer(),
-	"sum2": new DigitalSum(),
-	"sum3": new DigitalSum(),
-	"relay": new Relay(),
-}, {}, { deep: false });
+class AppState {
+	@observable
+	public nodes: {[id: string]: any} = {
+		"source1": new Sine(),
+		"source2": new Sine(),
+		"sum": new AnalogSum(),
+		"sampler": new Sampler(),
+		"display1": new Display(),
+		"display2": new Display(),
+		"delay1": new Delay(),
+		"delay2": new Delay(),
+		"graph": new Graph(),
+		"memory": new Memory(20),
+		"constant1": new Constant(),
+		"constant2": new Constant(),
+		"realtime": new RealtimeVisualizer(),
+		"sum2": new DigitalSum(),
+		"sum3": new DigitalSum(),
+		"relay": new Relay(),
+	}
+}
 
-export const App = observer(withStyles(styles)((props: { classes: Classes }) => {
+const state = new AppState();
+
+export const App = withStyles(styles)(observer((props: { classes: Classes }) => {
+	console.log("render");
+
 	const [ theme, setTheme ] = useState(createMuiTheme({
 		palette: {
 			type: "dark",
@@ -91,12 +132,14 @@ export const App = observer(withStyles(styles)((props: { classes: Classes }) => 
 		//[["source", "signal"], ["fourier", "input"]],
 	]);
 
+	const [ open, setOpen ] = useState<boolean>(true);
+
 	const addConnection = (connection: Connection) => {
 		const [outputConnector, inputConnector] = connection;
 
 		// We assume that all parts of this connection exist
-		const output: Output = state[outputConnector[0]][outputConnector[1]];
-		const input: Input<Output> = state[inputConnector[0]][inputConnector[1]];
+		const output: Output = state.nodes[outputConnector[0]][outputConnector[1]];
+		const input: Input<Output> = state.nodes[inputConnector[0]][inputConnector[1]];
 
 		input.connect(output);
 
@@ -109,8 +152,8 @@ export const App = observer(withStyles(styles)((props: { classes: Classes }) => 
 		const [outputConnector, inputConnector] = connection;
 
 		// We assume that all parts of this connection exist
-		const output: Output = state[outputConnector[0]][outputConnector[1]];
-		const input: Input<Output> = state[inputConnector[0]][inputConnector[1]];
+		const output: Output = state.nodes[outputConnector[0]][outputConnector[1]];
+		const input: Input<Output> = state.nodes[inputConnector[0]][inputConnector[1]];
 
 		// Before disconnecting, we need to check that the existing connection
 		// actually is the one we want to remove. When swappnig a connection at
@@ -130,8 +173,8 @@ export const App = observer(withStyles(styles)((props: { classes: Classes }) => 
 	console.log(graph);
 
 	const nodes: React.ReactNode[] = [];
-	for (const id in state) {
-		const process = state[id];
+	for (const id in state.nodes) {
+		const process = state.nodes[id];
 		let ProcessNode: any = null;
 
 		if (process instanceof Sampler) {
@@ -169,13 +212,59 @@ export const App = observer(withStyles(styles)((props: { classes: Classes }) => 
 		}
 
 		if (ProcessNode) {
-			nodes.push(<ProcessNode id={id} process={process}/>);
+			nodes.push(<ProcessNode id={id} key={id} process={process}/>);
 		}
 	}
 
+	const toggleDrawer = () => {
+		setOpen(!open);
+	};
+
+	const classes = props.classes;
 	return <div className={ props.classes.app }>
 		<CssBaseline/>
 		<ThemeProvider theme={theme}>
+			<Drawer
+				variant="permanent"
+				className={clsx(classes.drawer, {
+					[classes.drawerOpen]: open,
+					[classes.drawerClose]: !open,
+				})}
+				classes={{
+					paper: clsx({
+						[classes.drawerOpen]: open,
+						[classes.drawerClose]: !open,
+					}),
+				}}
+			>
+				<div className={classes.toggle}>
+					<IconButton onClick={toggleDrawer}>
+						{ open ? <ChevronLeftIcon/> : <ChevronRightIcon /> }
+					</IconButton>
+				</div>
+				<Divider />
+				<List>
+					{['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+						<ListItem button key={text} onClick={() => {
+							state.nodes[uuid.v4()] = new Constant();
+							state.nodes = state.nodes;
+							console.log(state.nodes);
+						}}>
+							<ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+							<ListItemText primary={text} />
+						</ListItem>
+					))}
+				</List>
+				<Divider />
+				<List>
+					{['All mail', 'Trash', 'Spam'].map((text, index) => (
+						<ListItem button key={text}>
+							<ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+							<ListItemText primary={text} />
+						</ListItem>
+					))}
+				</List>
+			</Drawer>
 			<AppBar className={props.classes.bar}>
 				<Box className={props.classes.barLayout}>
 					<Typography className={props.classes.title} variant="h6" display="inline">MixedSignals v0.1.0</Typography>

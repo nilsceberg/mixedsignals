@@ -5,16 +5,11 @@ import { ConnectorName, Connection } from "./Types";
 import { EditorContextType, EditorContext } from "./Types";
 import { ConnectorRadius } from "./Connector";
 
-import InboxIcon from "@material-ui/icons/Inbox";
-import MailIcon from "@material-ui/icons/Mail";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-
-import clsx from "clsx";
+import { observer } from "mobx-react";
 
 const styles = (theme: Theme) => createStyles({
 	editor: {
-		marginTop: "48px",
+		//marginTop: "48px",
 		width: "100%",
 		height: "100%",
 		boxSizing: "border-box",
@@ -30,33 +25,6 @@ const styles = (theme: Theme) => createStyles({
 		height: "100%",
 		filter: theme.palette.type === "light" ? "invert(1)" : "none",
 	},
-	drawer: {
-		width: 250,
-		flexShrink: 0,
-		whiteSpace: 'nowrap',
-		paddingTop: "48px",
-	},
-	drawerOpen: {
-		width: 250,
-		transition: theme.transitions.create('width', {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.enteringScreen,
-		}),
-	},
-	drawerClose: {
-		transition: theme.transitions.create('width', {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.leavingScreen,
-		}),
-		overflowX: 'hidden',
-		width: theme.spacing(7) + 1,
-		[theme.breakpoints.up('sm')]: {
-			width: theme.spacing(9) + 1,
-		},
-	},
-	toggle: {
-		marginTop: "48px",
-	}
 });
 
 export interface EditorProps {
@@ -71,10 +39,9 @@ interface EditorState {
 	connectFrom: ConnectorName | null;
 	sourceDirection: "input" | "output";
 	sourceType: string;
-	drawer: boolean;
 }
 
-export const Editor = withStyles(styles)(class extends React.Component<EditorProps & { classes: Classes }, EditorState> {
+export const Editor = withStyles(styles)(observer(class extends React.Component<EditorProps & { classes: Classes }, EditorState> {
 	private connectorRefs: { [name: string]: React.RefObject<HTMLDivElement> } = {};
 	private graph: React.RefObject<SVGSVGElement> = React.createRef();
 	private lastMouseCoords: [number, number] = [0, 0];
@@ -86,7 +53,6 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 			connectFrom: null,
 			sourceDirection: "input",
 			sourceType: "",
-			drawer: true,
 		};
 	}
 
@@ -339,12 +305,6 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 			typeColors: this.props.colors,
 		}
 
-		const open = this.state.drawer;
-
-		const toggleDrawer = () => {
-			this.setState({ drawer: !open });
-		}
-
 		return <EditorContext.Provider value={context}>
 			<div className={classes.editor}>
 				{/*<Graph a={[100, 100]} b={this.state.mouse}/>*/}
@@ -352,46 +312,9 @@ export const Editor = withStyles(styles)(class extends React.Component<EditorPro
 					<path id="dangling" d={this.bezier(this.getConnectorCoordinates(this.state.connectFrom), this.lastMouseCoords)} stroke={this.state.connectFrom ? "white" : "none"} fill="none"/>
 				</svg>
 				{this.props.children}
-				<Drawer
-					variant="permanent"
-					className={clsx(classes.drawer, {
-						[classes.drawerOpen]: open,
-						[classes.drawerClose]: !open,
-					})}
-					classes={{
-						paper: clsx({
-							[classes.drawerOpen]: open,
-							[classes.drawerClose]: !open,
-						}),
-					}}
-				>
-					<div className={classes.toggle}>
-						<IconButton onClick={toggleDrawer}>
-							{ open ? <ChevronLeftIcon/> : <ChevronRightIcon /> }
-						</IconButton>
-					</div>
-					<Divider />
-					<List>
-						{['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-							<ListItem button key={text}>
-								<ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-								<ListItemText primary={text} />
-							</ListItem>
-						))}
-					</List>
-					<Divider />
-					<List>
-						{['All mail', 'Trash', 'Spam'].map((text, index) => (
-							<ListItem button key={text}>
-								<ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-								<ListItemText primary={text} />
-							</ListItem>
-						))}
-					</List>
-				</Drawer>
 			</div>
 		</EditorContext.Provider>;
 	}
-});
+}));
 
 

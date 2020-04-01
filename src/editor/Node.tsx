@@ -74,7 +74,7 @@ export const Node = withStyles(styles)(class extends React.Component<NodeProps, 
 	}
 
 	render() {
-		return <Draggable defaultPosition={{x: 300, y: 200}} handle={`.${this.props.classes.handle}`} onDrag={() => this.context.onMoveNode(this.props.id)}>
+		return <Draggable positionOffset={{x: 300, y: 200}}  handle={`.${this.props.classes.handle}`} onDrag={() => this.context.onMoveNode(this.props.id)}>
 			<Paper className={this.props.classes.node} elevation={2}>
 				<div className={this.props.classes.handle}>
 					<Typography className={this.props.classes.title} variant="overline" >{this.props.name}</Typography><br/>
