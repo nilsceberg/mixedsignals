@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Theme, createStyles, Box } from "@material-ui/core";
+import { Theme, createStyles, Box, Divider, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { Blueprint } from "./editor/Blueprint";
 import { Sine } from "./processing/analog/Sine";
@@ -34,6 +34,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 		top: "48px", // app bar height
 		bottom: "0px",
 		width: "220px", // arbitrary
+	},
+	sectionHeader: {
+		margin: theme.spacing(1),
 	}
 	/* Kept for reference from old drawer:
 	drawerOpen: {
@@ -63,22 +66,42 @@ export interface PaletteProps {
 	onPlace?: (system: SystemConstructor, node: any, position: { x: number, y: number }) => void;
 }
 
+const Section = (props: { label: string }) => {
+	const classes = useStyles();
+
+	return <Typography
+		color="textSecondary"
+		display="block"
+		variant="caption"
+		className={classes.sectionHeader}
+		>
+		{props.label}
+	</Typography>;
+};
+
 export const Palette = (props: PaletteProps) => {
 	const classes = useStyles();
 	const onPlace = props.onPlace || (() => {});
 
 	return <Box className={classes.container} boxShadow={5}>
+		<Section label="Analog"/>
 		<Blueprint label="Sine Wave" system={Sine} node={SineNode} onPlace={onPlace}/>
-		<Blueprint label="AD Converter" system={Sampler} node={SamplerNode} onPlace={onPlace}/>
-		<Blueprint label="Analog Sum" system={AnalogSum} node={AnalogSumNode} onPlace={onPlace}/>
-		<Blueprint label="Display" system={Display} node={DisplayNode} onPlace={onPlace}/>
-		<Blueprint label="Delay" system={Delay} node={DelayNode} onPlace={onPlace}/>
-		<Blueprint label="Memory" system={Memory} node={MemoryNode} onPlace={onPlace}/>
-		<Blueprint label="Buffer Graph" system={Graph} node={GraphNode} onPlace={onPlace}/>
 		<Blueprint label="Constant" system={Constant} node={ConstantNode} onPlace={onPlace}/>
-		<Blueprint label="Real-Time Visualizer" system={RealtimeVisualizer} node={RealtimeVisualizerNode} onPlace={onPlace}/>
-		<Blueprint label="Digital Sum" system={DigitalSum} node={DigitalSumNode} onPlace={onPlace}/>
+		<Blueprint label="Analog Sum" system={AnalogSum} node={AnalogSumNode} onPlace={onPlace}/>
+		<Divider/>
+		<Section label="Digital"/>
+		<Blueprint label="Delay" system={Delay} node={DelayNode} onPlace={onPlace}/>
 		<Blueprint label="Relay" system={Relay} node={RelayNode} onPlace={onPlace}/>
+		<Blueprint label="Display" system={Display} node={DisplayNode} onPlace={onPlace}/>
+		<Blueprint label="Digital Sum" system={DigitalSum} node={DigitalSumNode} onPlace={onPlace}/>
+		<Blueprint label="Real-Time Visualizer" system={RealtimeVisualizer} node={RealtimeVisualizerNode} onPlace={onPlace}/>
+		<Divider/>
+		<Section label="Buffers"/>
+		<Blueprint label="Buffer Graph" system={Graph} node={GraphNode} onPlace={onPlace}/>
+		<Divider/>
+		<Section label="Converters"/>
+		<Blueprint label="AD Converter" system={Sampler} node={SamplerNode} onPlace={onPlace}/>
+		<Blueprint label="Memory" system={Memory} node={MemoryNode} onPlace={onPlace}/>
 	</Box>;
 }
 
