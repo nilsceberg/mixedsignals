@@ -41,6 +41,9 @@ import MailIcon from "@material-ui/icons/Mail";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import clsx from "clsx";
+import { Blueprint } from "./editor/Blueprint";
+import { Palette } from "./Palette";
+import { SystemConstructor } from "./processing/System";
 
 const styles = (theme: Theme) => createStyles({
 	bar: {
@@ -71,34 +74,14 @@ const styles = (theme: Theme) => createStyles({
 		flexShrink: 0,
 		whiteSpace: 'nowrap',
 		paddingTop: "48px",
+		overflow: "show",
 	},
-	drawerOpen: {
-		width: 250,
-		//transition: theme.transitions.create('width', {
-		//	easing: theme.transitions.easing.sharp,
-		//	duration: theme.transitions.duration.enteringScreen,
-		//}),
-	},
-	drawerClose: {
-		//transition: theme.transitions.create('width', {
-		//	easing: theme.transitions.easing.sharp,
-		//	duration: theme.transitions.duration.leavingScreen,
-		//}),
-		overflowX: 'hidden',
-		width: "56px",//width: theme.spacing(7) + 1,
-		//[theme.breakpoints.up('sm')]: {
-		//	width: theme.spacing(9) + 1,
-		//},
-	},
-	toggle: {
-		marginTop: "48px",
-	}
 });
 
 class AppState {
 	@observable
 	public nodes: {[id: string]: any} = {
-		"source1": new Sine(),
+/*		"source1": new Sine(),
 		"source2": new Sine(),
 		"sum": new AnalogSum(),
 		"sampler": new Sampler(),
@@ -113,7 +96,7 @@ class AppState {
 		"realtime": new RealtimeVisualizer(),
 		"sum2": new DigitalSum(),
 		"sum3": new DigitalSum(),
-		"relay": new Relay(),
+		"relay": new Relay(),*/
 	}
 }
 
@@ -170,6 +153,12 @@ export const App = withStyles(styles)(observer((props: { classes: Classes }) => 
 		setGraph(newGraph);
 	}
 
+	const placeSystem = (system: SystemConstructor, position: { x: number, y: number }) => {
+		console.log(`Placing ${system.name} at ${position.x}, ${position.y}.`);
+		const id = uuid.v4();
+		state.nodes[id] = new system();
+	}
+
 	console.log(graph);
 
 	const nodes: React.ReactNode[] = [];
@@ -224,47 +213,6 @@ export const App = withStyles(styles)(observer((props: { classes: Classes }) => 
 	return <div className={ props.classes.app }>
 		<CssBaseline/>
 		<ThemeProvider theme={theme}>
-			<Drawer
-				variant="permanent"
-				className={clsx(classes.drawer, {
-					[classes.drawerOpen]: open,
-					[classes.drawerClose]: !open,
-				})}
-				classes={{
-					paper: clsx({
-						[classes.drawerOpen]: open,
-						[classes.drawerClose]: !open,
-					}),
-				}}
-			>
-				<div className={classes.toggle}>
-					<IconButton onClick={toggleDrawer}>
-						{ open ? <ChevronLeftIcon/> : <ChevronRightIcon /> }
-					</IconButton>
-				</div>
-				<Divider />
-				<List>
-					{['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-						<ListItem button key={text} onClick={() => {
-							state.nodes[uuid.v4()] = new Constant();
-							state.nodes = state.nodes;
-							console.log(state.nodes);
-						}}>
-							<ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-							<ListItemText primary={text} />
-						</ListItem>
-					))}
-				</List>
-				<Divider />
-				<List>
-					{['All mail', 'Trash', 'Spam'].map((text, index) => (
-						<ListItem button key={text}>
-							<ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-							<ListItemText primary={text} />
-						</ListItem>
-					))}
-				</List>
-			</Drawer>
 			<AppBar className={props.classes.bar}>
 				<Box className={props.classes.barLayout}>
 					<Typography className={props.classes.title} variant="h6" display="inline">MixedSignals v0.1.0</Typography>
@@ -284,6 +232,7 @@ export const App = withStyles(styles)(observer((props: { classes: Classes }) => 
 			}}>
 				{nodes}
 			</Editor>
+			<Palette onPlace={placeSystem}/>
 		</ThemeProvider>
 	</div>;
 }));
