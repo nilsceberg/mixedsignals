@@ -43,7 +43,7 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import clsx from "clsx";
 import { Blueprint } from "./editor/Blueprint";
 import { Palette } from "./Palette";
-import { SystemConstructor } from "./processing/System";
+import { SystemConstructor, System } from "./processing/System";
 
 const styles = (theme: Theme) => createStyles({
 	bar: {
@@ -78,9 +78,15 @@ const styles = (theme: Theme) => createStyles({
 	},
 });
 
+interface SystemNode {
+	system: System,
+	uiNode: any,
+	initialPosition: { x: number, y: number },
+}
+
 class AppState {
 	@observable
-	public nodes: {[id: string]: any} = {
+	public nodes: {[id: string]: SystemNode} = {
 /*		"source1": new Sine(),
 		"source2": new Sine(),
 		"sum": new AnalogSum(),
@@ -121,8 +127,8 @@ export const App = withStyles(styles)(observer((props: { classes: Classes }) => 
 		const [outputConnector, inputConnector] = connection;
 
 		// We assume that all parts of this connection exist
-		const output: Output = state.nodes[outputConnector[0]][outputConnector[1]];
-		const input: Input<Output> = state.nodes[inputConnector[0]][inputConnector[1]];
+		const output: Output = (state.nodes[outputConnector[0]].system as any)[outputConnector[1]];
+		const input: Input<Output> = (state.nodes[inputConnector[0]].system as any)[inputConnector[1]];
 
 		input.connect(output);
 
@@ -135,8 +141,8 @@ export const App = withStyles(styles)(observer((props: { classes: Classes }) => 
 		const [outputConnector, inputConnector] = connection;
 
 		// We assume that all parts of this connection exist
-		const output: Output = state.nodes[outputConnector[0]][outputConnector[1]];
-		const input: Input<Output> = state.nodes[inputConnector[0]][inputConnector[1]];
+		const output: Output = (state.nodes[outputConnector[0]].system as any)[outputConnector[1]];
+		const input: Input<Output> = (state.nodes[inputConnector[0]].system as any)[inputConnector[1]];
 
 		// Before disconnecting, we need to check that the existing connection
 		// actually is the one we want to remove. When swappnig a connection at
@@ -153,55 +159,27 @@ export const App = withStyles(styles)(observer((props: { classes: Classes }) => 
 		setGraph(newGraph);
 	}
 
-	const placeSystem = (system: SystemConstructor, position: { x: number, y: number }) => {
+	const placeSystem = (system: SystemConstructor, node: any, position: { x: number, y: number }) => {
 		console.log(`Placing ${system.name} at ${position.x}, ${position.y}.`);
 		const id = uuid.v4();
-		state.nodes[id] = new system();
+		state.nodes[id] = {
+			system: new system(),
+			uiNode: node,
+			initialPosition: position,
+		};
 	}
 
 	console.log(graph);
 
 	const nodes: React.ReactNode[] = [];
 	for (const id in state.nodes) {
-		const process = state.nodes[id];
-		let ProcessNode: any = null;
+		const node = state.nodes[id];
+		const system = node.system;
+		const offset = node.initialPosition;
+		let UINode: any = node.uiNode;
 
-		if (process instanceof Sampler) {
-			ProcessNode = SamplerNode;
-		}
-		else if (process instanceof Sine) {
-			ProcessNode = SineNode;
-		}
-		else if (process instanceof AnalogSum) {
-			ProcessNode = AnalogSumNode;
-		}
-		else if (process instanceof Display) {
-			ProcessNode = DisplayNode;
-		}
-		else if (process instanceof Delay) {
-			ProcessNode = DelayNode;
-		}
-		else if (process instanceof Memory) {
-			ProcessNode = MemoryNode;
-		}
-		else if (process instanceof Graph) {
-			ProcessNode = GraphNode;
-		}
-		else if (process instanceof Constant) {
-			ProcessNode = ConstantNode;
-		}
-		else if (process instanceof RealtimeVisualizer) {
-			ProcessNode = RealtimeVisualizerNode;
-		}
-		else if (process instanceof DigitalSum) {
-			ProcessNode = DigitalSumNode;
-		}
-		else if (process instanceof Relay) {
-			ProcessNode = RelayNode;
-		}
-
-		if (ProcessNode) {
-			nodes.push(<ProcessNode id={id} key={id} process={process}/>);
+		if (UINode) {
+			nodes.push(<UINode id={id} key={id} process={system} positionOffset={offset}/>);
 		}
 	}
 

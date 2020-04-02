@@ -32,7 +32,7 @@ export class GraphNode extends React.Component<NodeProps<Graph>, { largest: numb
 	}
 
 	render() {
-		return <Node name="Visualizer" io={[{direction: "input", name: "buffer", type: SignalType.Buffer}]} {...this.props}>
+		return <Node name="Buffer Graph" io={[{direction: "input", name: "buffer", type: SignalType.Buffer}]} {...this.props}>
 				<Scatter data={{
 					datasets: [{
 						label: "signal",

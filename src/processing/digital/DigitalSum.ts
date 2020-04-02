@@ -1,8 +1,9 @@
 import { AnalogInput, AnalogOutput } from "../../signals/Analog";
 import { observable } from "mobx";
 import { DigitalInput, DigitalOutput } from "../../signals/Digital";
+import { System } from "../System";
 
-export class DigitalSum {
+export class DigitalSum extends System {
 	public readonly a: DigitalInput;
 	public readonly b: DigitalInput;
 	public readonly sum: DigitalOutput;
@@ -20,6 +21,8 @@ export class DigitalSum {
 	private bv: number = 0;
 
 	constructor() {
+		super();
+
 		this.sum = new DigitalOutput();
 
 		this.a = new DigitalInput(x => {

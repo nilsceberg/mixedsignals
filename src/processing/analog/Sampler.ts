@@ -1,8 +1,9 @@
 import { AnalogInput, AnalogOutput } from "../../signals/Analog";
 import { DigitalOutput } from "../../signals/Digital";
 import { observable } from "mobx";
+import { System } from "../System";
 
-export class Sampler {
+export class Sampler extends System {
 	public readonly analog: AnalogInput;
 	public readonly digital: DigitalOutput;
 	public readonly meta_freq: AnalogOutput;
@@ -14,6 +15,8 @@ export class Sampler {
 	public lastSample: number = 0;
 
 	constructor() {
+		super();
+
 		this.analog = new AnalogInput();
 		this.digital = new DigitalOutput();
 		this.meta_freq = new AnalogOutput(() => this.frequency);

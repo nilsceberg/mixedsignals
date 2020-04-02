@@ -1,8 +1,9 @@
 import { observable } from "mobx";
 import { DigitalInput, BufferOutput, BufferInput } from "../../signals/Digital";
 import { AnalogInput } from "../../signals/Analog";
+import { System } from "../System";
 
-export class RealtimeVisualizer {
+export class RealtimeVisualizer extends System {
 	public readonly length: AnalogInput;
 	public readonly input: DigitalInput;
 
@@ -29,6 +30,8 @@ export class RealtimeVisualizer {
 	}
 
 	constructor() {
+		super();
+
 		this.length = new AnalogInput();
 
 		this.updateLength(this.currentLength);

@@ -1,7 +1,8 @@
 import { observable, action } from "mobx";
 import { DigitalInput, BufferOutput, SignalBuffer } from "../../signals/Digital";
+import { System } from "../System";
 
-export class Memory {
+export class Memory extends System {
 	public readonly input: DigitalInput;
 	public readonly buffer: BufferOutput;
 
@@ -11,10 +12,11 @@ export class Memory {
 	@observable
 	public memory: number[] = [];
 
-	constructor(length: number) {
-		this.length = length;
+	constructor() {
+		super();
+		this.length = 20;
 		
-		for (let i=0; i<length; ++i) {
+		for (let i=0; i<this.length; ++i) {
 			this.memory.push(0);
 		}
 

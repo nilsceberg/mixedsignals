@@ -7,16 +7,18 @@ import { SystemConstructor } from "../processing/System";
 export interface BlueprintProps {
 	label: string,
 	system: SystemConstructor,
-	onPlace?: (system: SystemConstructor, position: { x: number, y: number}) => void,
+	node: any,
+	onPlace?: (system: SystemConstructor, node: any, position: { x: number, y: number}) => void,
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
 	container: {
-		padding: theme.spacing(1),
+		margin: theme.spacing(1),
 		position: "relative",
+		boxSizing: "border-box",
 	},
 	button: {
-		position: "absolute",
+		position: "static",
 	},
 	ghost: {
 		position: "absolute",
@@ -28,9 +30,9 @@ export const Blueprint = (props: BlueprintProps) => {
 	const onPlace = props.onPlace || (() => {});
 	return (
 		<div className={classes.container}>
-			<Button className={classes.ghost} color="secondary" variant="outlined" disabled>{props.label}</Button>
-			<Draggable position={{x: 0, y: 0}} onStop={(e, data) => onPlace(props.system, { x: data.x, y: data.y })}>
-				<Button className={classes.button} color="secondary" variant="contained">{props.label}</Button>
+			<Button fullWidth className={classes.ghost} color="secondary" variant="outlined" disabled>{props.label}</Button>
+			<Draggable position={{x: 0, y: 0}} onStop={(e, data) => onPlace(props.system, props.node, { x: data.x, y: data.y })}>
+				<Button fullWidth className={classes.button} color="secondary" variant="contained">{props.label}</Button>
 			</Draggable>
 		</div>
 	);
