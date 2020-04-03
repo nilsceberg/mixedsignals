@@ -3,15 +3,15 @@ import { TextField } from "@material-ui/core";
 import { observer } from "mobx-react";
 
 import { Node } from "../editor/Node";
-import { Sampler } from "../processing/analog/Sampler";
+import { Sampler } from "../processing/functional/Sampler";
 import { NodeProps } from "./Node";
 import { SignalType } from "../editor/Types";
 
 export const SamplerNode = observer((props: NodeProps<Sampler>) => {
 	return <Node name="AD converter" io={[
-		{direction: "input", name: "analog", type: SignalType.Analog},
-		{direction: "output", name: "digital", type: SignalType.Digital},
-		{direction: "output", name: "meta_freq", type: SignalType.Analog},
+		{direction: "input", name: "function", type: SignalType.Function},
+		{direction: "output", name: "discrete", type: SignalType.Discrete},
+		{direction: "output", name: "meta_freq", type: SignalType.Function},
 	]} {...props}>
 		<TextField value={props.process.frequency} onChange={event => props.process.frequency = Number.parseFloat(event.target.value)} size="small" variant="outlined" label="Frequency (Hz)" type="number"/><br/>
 		<TextField disabled value={props.process.lastSample} size="small" variant="outlined" label="Last sample" type="number"/><br/>

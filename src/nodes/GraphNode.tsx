@@ -6,7 +6,7 @@ import { Node } from "../editor/Node";
 import { SignalType } from "../editor/Types";
 import { observer } from "mobx-react";
 import { NodeProps } from "./Node";
-import { Graph } from "../processing/digital/Graph";
+import { Graph } from "../processing/discrete/Graph";
 
 @observer
 export class GraphNode extends React.Component<NodeProps<Graph>, { largest: number }> {

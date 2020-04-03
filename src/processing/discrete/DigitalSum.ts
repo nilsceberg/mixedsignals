@@ -1,12 +1,12 @@
-import { AnalogInput, AnalogOutput } from "../../signals/Analog";
+import { FunctionInput, FunctionOutput } from "../../signals/Generator";
 import { observable } from "mobx";
-import { DigitalInput, DigitalOutput } from "../../signals/Digital";
+import { RealTimeInput, RealTimeOutput } from "../../signals/RealTime";
 import { System } from "../System";
 
 export class DigitalSum extends System {
-	public readonly a: DigitalInput;
-	public readonly b: DigitalInput;
-	public readonly sum: DigitalOutput;
+	public readonly a: RealTimeInput;
+	public readonly b: RealTimeInput;
+	public readonly sum: RealTimeOutput;
 
 	@observable
 	public aw: number = 1;
@@ -23,16 +23,16 @@ export class DigitalSum extends System {
 	constructor() {
 		super();
 
-		this.sum = new DigitalOutput();
+		this.sum = new RealTimeOutput();
 
-		this.a = new DigitalInput(x => {
+		this.a = new RealTimeInput(x => {
 			this.av = x;
 			if (this.clock === "a") {
 				this.sum.write(this.aw * this.av + this.bw * this.bv);
 			}
 		});
 
-		this.b = new DigitalInput(x => {
+		this.b = new RealTimeInput(x => {
 			this.bv = x;
 			if (this.clock === "b") {
 				this.sum.write(this.aw * this.av + this.bw * this.bv);

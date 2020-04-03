@@ -1,9 +1,9 @@
 import { observable, action } from "mobx";
-import { DigitalInput, BufferOutput, SignalBuffer } from "../../signals/Digital";
+import { RealTimeInput, BufferOutput, SignalBuffer } from "../../signals/RealTime";
 import { System } from "../System";
 
 export class Memory extends System {
-	public readonly input: DigitalInput;
+	public readonly input: RealTimeInput;
 	public readonly buffer: BufferOutput;
 
 	@observable
@@ -21,7 +21,7 @@ export class Memory extends System {
 		}
 
 		this.buffer = new BufferOutput();
-		this.input = new DigitalInput(action((x: number) => {
+		this.input = new RealTimeInput(action((x: number) => {
 			this.memory.shift();
 			this.memory.push(x);
 			this.buffer.write({

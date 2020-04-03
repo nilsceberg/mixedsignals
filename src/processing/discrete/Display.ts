@@ -1,15 +1,15 @@
 import { observable } from "mobx";
-import { DigitalInput } from "../../signals/Digital";
+import { RealTimeInput } from "../../signals/RealTime";
 import { System } from "../System";
 
 export class Display extends System {
-	public readonly signal: DigitalInput;
+	public readonly signal: RealTimeInput;
 
 	@observable
 	public last: number = 0;
 
 	constructor() {
 		super();
-		this.signal = new DigitalInput(x => this.last = x);
+		this.signal = new RealTimeInput(x => this.last = x);
 	}
 }

@@ -1,10 +1,10 @@
-import { AnalogOutput } from "../../signals/Analog";
+import { FunctionOutput } from "../../signals/Generator";
 
 import { observable } from "mobx";
 import { System } from "../System";
 
 export class Sine extends System {
-	public readonly signal: AnalogOutput;
+	public readonly signal: FunctionOutput;
 
 	@observable
 	public frequency: number = 1;
@@ -17,7 +17,7 @@ export class Sine extends System {
 
 	constructor() {
 		super();
-		this.signal = new AnalogOutput(
+		this.signal = new FunctionOutput(
 			t => this.amplitude * Math.sin(2.0 * Math.PI * this.frequency * t + this.phase)
 		);
 	}

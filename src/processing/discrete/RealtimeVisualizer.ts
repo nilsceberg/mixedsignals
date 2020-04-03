@@ -1,11 +1,11 @@
 import { observable } from "mobx";
-import { DigitalInput, BufferOutput, BufferInput } from "../../signals/Digital";
-import { AnalogInput } from "../../signals/Analog";
+import { RealTimeInput, BufferOutput, BufferInput } from "../../signals/RealTime";
+import { FunctionInput } from "../../signals/Generator";
 import { System } from "../System";
 
 export class RealtimeVisualizer extends System {
-	public readonly length: AnalogInput;
-	public readonly input: DigitalInput;
+	public readonly length: FunctionInput;
+	public readonly input: RealTimeInput;
 
 	@observable
 	public currentLength: number = 1;
@@ -32,12 +32,12 @@ export class RealtimeVisualizer extends System {
 	constructor() {
 		super();
 
-		this.length = new AnalogInput();
+		this.length = new FunctionInput();
 
 		this.updateLength(this.currentLength);
 
-		this.input = new DigitalInput(x => {
-			this.updateLength(this.length.sample());
+		this.input = new RealTimeInput(x => {
+			this.updateLength(this.length.sample(0));
 
 			if (this.currentLength === 0) {
 				return;

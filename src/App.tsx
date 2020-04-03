@@ -1,49 +1,15 @@
 import React, { useState } from "react";
-import logo from "./logo.svg";
-import Button from "@material-ui/core/Button";
 import { CssBaseline, Theme, createMuiTheme, AppBar, Typography, Switch, FormControlLabel, Box, TextField, Drawer, IconButton, Divider, List, ListItemIcon, ListItem, ListItemText } from "@material-ui/core";
 import { withStyles, ThemeProvider, createStyles } from "@material-ui/styles";
 import { Classes } from "@material-ui/styles/mergeClasses/mergeClasses";
-import { Line, Scatter } from "react-chartjs-2";
 import { Editor } from "./editor/Editor";
-import { Node } from "./editor/Node";
-import { GraphNode } from "./nodes/GraphNode";
 import { Connection, connectionEquals, SignalType } from "./editor/Types";
-import { Sine } from "./processing/analog/Sine";
-import { Sampler } from "./processing/analog/Sampler";
-import { SineNode } from "./nodes/SineNode";
-import { SamplerNode } from "./nodes/SamplerNode";
-import { observer } from "mobx-react";
-import { observable } from "mobx";
-import { AnalogOutput, AnalogInput } from "./signals/Analog";
-import { AnalogSum } from "./processing/analog/AnalogSum";
-import { AnalogSumNode } from "./nodes/AnalogSumNode";
-import { Display } from "./processing/digital/Display";
-import { DisplayNode } from "./nodes/DisplayNode";
-import { Output, Input } from "./signals/IO";
-import { Delay } from "./processing/digital/Delay";
-import { DelayNode } from "./nodes/DelayNode";
-import { Graph } from "./processing/digital/Graph";
-import { Memory } from "./processing/digital/Memory";
-import { MemoryNode } from "./nodes/MemoryNode";
-import { Constant } from "./processing/analog/Constant";
-import { ConstantNode } from "./nodes/ConstantNode";
-import { RealtimeVisualizerNode } from "./nodes/RealtimeVisualizerNode";
-import { RealtimeVisualizer } from "./processing/digital/RealtimeVisualizer";
-import { DigitalSum } from "./processing/digital/DigitalSum";
-import { DigitalSumNode } from "./nodes/DigitalSumNode";
-import { Relay } from "./processing/digital/Relay";
-import { RelayNode } from "./nodes/RelayNode";
-import * as uuid from "uuid";
-
-import InboxIcon from "@material-ui/icons/Inbox";
-import MailIcon from "@material-ui/icons/Mail";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import clsx from "clsx";
-import { Blueprint } from "./editor/Blueprint";
 import { Palette } from "./Palette";
 import { SystemConstructor, System } from "./processing/System";
+import { observable } from "mobx";
+import { Output, Input } from "./signals/IO";
+import * as uuid from "uuid";
+import { observer } from "mobx-react";
 
 const styles = (theme: Theme) => createStyles({
 	bar: {
@@ -87,22 +53,6 @@ interface SystemNode {
 class AppState {
 	@observable
 	public nodes: {[id: string]: SystemNode} = {
-/*		"source1": new Sine(),
-		"source2": new Sine(),
-		"sum": new AnalogSum(),
-		"sampler": new Sampler(),
-		"display1": new Display(),
-		"display2": new Display(),
-		"delay1": new Delay(),
-		"delay2": new Delay(),
-		"graph": new Graph(),
-		"memory": new Memory(20),
-		"constant1": new Constant(),
-		"constant2": new Constant(),
-		"realtime": new RealtimeVisualizer(),
-		"sum2": new DigitalSum(),
-		"sum3": new DigitalSum(),
-		"relay": new Relay(),*/
 	}
 }
 
@@ -204,9 +154,10 @@ export const App = withStyles(styles)(observer((props: { classes: Classes }) => 
 				</Box>
 			</AppBar>
 			<Editor graph={graph} onConnectionCreated={addConnection} onConnectionDeleted={removeConnection} colors={{
-				[SignalType.Analog]: "yellow",
-				[SignalType.Digital]: "blue",
-				[SignalType.Buffer]: "red",
+				[SignalType.Function]: "yellow",
+				[SignalType.RealTime]: "red",
+				[SignalType.Discrete]: "blue",
+				[SignalType.Buffer]: "purple",
 			}}>
 				{nodes}
 			</Editor>

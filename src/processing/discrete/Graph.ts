@@ -1,5 +1,5 @@
 import { observable } from "mobx";
-import { DigitalInput, BufferOutput, BufferInput } from "../../signals/Digital";
+import { RealTimeInput, BufferOutput, BufferInput } from "../../signals/RealTime";
 import { System } from "../System";
 
 export class Graph extends System {

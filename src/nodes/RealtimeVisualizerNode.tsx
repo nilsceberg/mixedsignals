@@ -6,8 +6,8 @@ import { Node } from "../editor/Node";
 import { SignalType } from "../editor/Types";
 import { observer } from "mobx-react";
 import { NodeProps } from "./Node";
-import { Graph } from "../processing/digital/Graph";
-import { RealtimeVisualizer } from "../processing/digital/RealtimeVisualizer";
+import { Graph } from "../processing/discrete/Graph";
+import { RealtimeVisualizer } from "../processing/discrete/RealtimeVisualizer";
 
 @observer
 export class RealtimeVisualizerNode extends React.Component<NodeProps<RealtimeVisualizer>, { largest: number }> {
@@ -33,7 +33,7 @@ export class RealtimeVisualizerNode extends React.Component<NodeProps<RealtimeVi
 	}
 
 	render() {
-		return <Node name="Real-Time Visualizer" io={[{direction: "input", name: "input", type: SignalType.Digital}, {direction: "input", name: "length", type: SignalType.Analog}]} {...this.props}>
+		return <Node name="Real-Time Visualizer" io={[{direction: "input", name: "input", type: SignalType.RealTime}, {direction: "input", name: "length", type: SignalType.Function}]} {...this.props}>
 				<Scatter data={{
 					datasets: [{
 						label: "signal",

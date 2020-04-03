@@ -46,11 +46,15 @@ class PushInput<T> implements Input<PushOutput<T>> {
 	public getRemote(): PushOutput<T> | null {
 		return this.remote;
 	}
+
+	public isConnected(): boolean {
+		return this.remote !== null;
+	}
 }
 
-export type DigitalProcess = PushProcess<number>;
-export class DigitalOutput extends PushOutput<number> {};
-export class DigitalInput extends PushInput<number> {};
+export type RealTimeProcess = PushProcess<number>;
+export class RealTimeOutput extends PushOutput<number> {};
+export class RealTimeInput extends PushInput<number> {};
 
 export interface SignalBuffer {
 	samples: number[];

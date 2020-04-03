@@ -1,8 +1,9 @@
 import React from "react";
 
 export enum SignalType {
-	Analog = "analog",
-	Digital = "digital",
+	Function = "function",
+	Discrete = "discrete",
+	RealTime = "realtime",
 	Buffer = "buffer",
 }
 
