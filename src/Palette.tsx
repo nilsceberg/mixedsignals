@@ -70,20 +70,20 @@ export const Palette = (props: PaletteProps) => {
 		<Blueprint label="Sum" system={Sum} node={SumNode} onPlace={onPlace}/>
 		<Divider/>
 		<Section label="Discrete"/>
-		<Blueprint label="Delay" system={Delay} node={DelayNode} onPlace={onPlace}/>
-		<Blueprint label="Relay" system={Relay} node={RelayNode} onPlace={onPlace}/>
+		{/*<Blueprint label="Delay" system={Delay} node={DelayNode} onPlace={onPlace}/>
+		<Blueprint label="Relay" system={Relay} node={RelayNode} onPlace={onPlace}/>*/}
 		<Blueprint label="Display" system={Display} node={DisplayNode} onPlace={onPlace}/>
-		<Blueprint label="Discrete Sum" system={DigitalSum} node={DigitalSumNode} onPlace={onPlace}/>
+		{/*<Blueprint label="Discrete Sum" system={DigitalSum} node={DigitalSumNode} onPlace={onPlace}/>*/}
 		<Blueprint label="Real-Time Visualizer" system={RealtimeVisualizer} node={RealtimeVisualizerNode} onPlace={onPlace}/>
-		<Divider/>
+		{/*<Divider/>
 		<Section label="Buffers"/>
 		<Blueprint label="Buffer Graph" system={Graph} node={GraphNode} onPlace={onPlace}/>
-		<Divider/>
+		<Divider/>*/}
 		<Section label="Real-Time"/>
 		<Blueprint label="Clock" system={Clock} node={ClockNode} onPlace={onPlace}/>
 		<Divider/>
 		<Section label="Converters"/>
 		<Blueprint label="AD Converter" system={Sampler} node={SamplerNode} onPlace={onPlace}/>
-		<Blueprint label="Memory" system={Memory} node={MemoryNode} onPlace={onPlace}/>
+		{/*<Blueprint label="Memory" system={Memory} node={MemoryNode} onPlace={onPlace}/>*/}
 	</Box>;
 }
