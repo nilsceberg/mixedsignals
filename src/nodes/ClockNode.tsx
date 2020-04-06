@@ -15,7 +15,6 @@ export const ClockNode = observer((props: NodeProps<Clock>) => {
 		{direction: "output", name: "meta_freq", type: SignalType.Function},
 	]} {...props}>
 		<TextField disabled={props.process.frequencyInput} value={props.process.frequency} onChange={event => props.process.frequency = Number.parseFloat(event.target.value)} size="small" variant="outlined" label="Frequency (Hz)" type="number"/><br/>
-		<TextField disabled value={props.process.actualFrequency} size="small" variant="outlined" label="Actual frequency (Hz)" type="number"/><br/>
+		<TextField disabled error={props.process.actualFrequency < props.process.frequency} value={props.process.actualFrequency} size="small" variant="outlined" label="Actual frequency (Hz)" type="number"/><br/>
 	</Node>;
 }); 
-
