@@ -15,7 +15,13 @@ export class Clock extends System {
 	public frequency: number = 1;
 
 	@observable
+	public actualFrequency: number = 1;
+
+	@observable
 	public frequencyInput: boolean = false;
+
+	private samplesThisSecond: number = 0;
+	private frequencyCounter: NodeJS.Timeout;
 
 	constructor() {
 		super();
@@ -33,6 +39,13 @@ export class Clock extends System {
 				this.frequency = this.freq.sample(0);
 			}
 
+			const frequency = this.frequency;
+
+			if (isNaN(frequency) || frequency <= 0.0) {
+				setTimeout(tick, 100);
+				return;
+			}
+
 			if (this.discrete.isConnected()) {
 				this.output.write(await this.discrete.read());
 			}
@@ -40,18 +53,20 @@ export class Clock extends System {
 				this.output.write(0);
 			}
 
-			if (isNaN(this.frequency) || this.frequency <= 0.0) {
-				setInterval(tick, 100);
-				return;
-			}
+			this.samplesThisSecond++;
 
-			let timeout = (last + 1.0 / this.frequency * 1000.0) - time();
+			let timeout = (last + 1.0 / frequency - time()) * 1000.0;
 			if (timeout < 0) {
 				timeout = 0;
 			}
 
 			setTimeout(tick, timeout);
 		};
+
+		this.frequencyCounter = setInterval(() => {
+			this.actualFrequency = this.samplesThisSecond;
+			this.samplesThisSecond = 0;
+		}, 1000);
 
 		tick();
 	}
