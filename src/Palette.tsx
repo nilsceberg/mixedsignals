@@ -77,8 +77,8 @@ export const Palette = (props: PaletteProps) => {
 		<Blueprint label="Real-Time Visualizer" system={RealtimeVisualizer} node={RealtimeVisualizerNode} onPlace={onPlace}/>
 		{/*<Divider/>
 		<Section label="Buffers"/>
-		<Blueprint label="Buffer Graph" system={Graph} node={GraphNode} onPlace={onPlace}/>
-		<Divider/>*/}
+		<Blueprint label="Buffer Graph" system={Graph} node={GraphNode} onPlace={onPlace}/>*/}
+		<Divider/>
 		<Section label="Real-Time"/>
 		<Blueprint label="Clock" system={Clock} node={ClockNode} onPlace={onPlace}/>
 		<Divider/>
