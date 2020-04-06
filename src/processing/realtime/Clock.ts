@@ -25,7 +25,7 @@ export class Clock extends System {
 		this.freq = new FunctionInput();
 		this.meta_freq = new FunctionOutput(() => this.frequency);
 
-		const tick = () => {
+		const tick = async () => {
 			const last = time();
 
 			this.frequencyInput = this.freq.isConnected();
@@ -34,7 +34,7 @@ export class Clock extends System {
 			}
 
 			if (this.discrete.isConnected()) {
-				this.output.write(this.discrete.read());
+				this.output.write(await this.discrete.read());
 			}
 			else {
 				this.output.write(0);

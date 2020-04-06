@@ -20,7 +20,7 @@ export class Sampler extends System {
 		super();
 
 		this.function = new FunctionInput();
-		this.discrete = new DiscreteOutput(() => {
+		this.discrete = new DiscreteOutput(async () => {
 			const sample = this.function.sample(this.t);
 			let step = 1.0 / this.frequency;
 			if (isNaN(step)) {

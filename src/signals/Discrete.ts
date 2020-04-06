@@ -1,6 +1,6 @@
 import { Input, Output } from "./IO";
 
-export type Next = () => number;
+export type Next = () => Promise<number>;
 
 export class DiscreteOutput implements Output {
 	private next: Next;
@@ -9,8 +9,8 @@ export class DiscreteOutput implements Output {
 		this.next = next;
 	}
 
-	read(): number {
-		let s = this.next();
+	async read(): Promise<number> {
+		let s = await this.next();
 		if (isNaN(s)) {
 			return 0;
 		}
@@ -35,7 +35,7 @@ export class DiscreteInput implements Input<DiscreteOutput> {
 		return this.remote;
 	}
 
-	public read(): number {
+	public async read(): Promise<number> {
 		if (this.remote !== null) {
 			return this.remote.read();
 		}
