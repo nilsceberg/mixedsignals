@@ -1,18 +1,20 @@
 import { Input, Output } from "./IO";
 
-export type DiscreteFunction = () => Promise<number>;
+export type DiscreteFunction = (consumer: string) => Promise<number>;
 
 export class DiscreteOutput implements Output {
 	private f: DiscreteFunction;
 	private next: Promise<number> | null;
+	private lastConsumer: string = "";
+	private lastSample: number = 0;
 
 	constructor(f: DiscreteFunction) {
 		this.f = f;
 		this.next = null;
 	}
 
-	private async evaluate(): Promise<number> {
-		let s = await this.f();
+	private async evaluate(consumer: string): Promise<number> {
+		let s = await this.f(consumer);
 		if (isNaN(s)) {
 			return 0;
 		}
@@ -21,13 +23,20 @@ export class DiscreteOutput implements Output {
 		}
 	}
 
-	async read(): Promise<number> {
+	async read(consumer: string): Promise<number> {
 		if (this.next) {
 			return await this.next;
 		}
+		// If there is no promise but your consumer ID (unique for every evaluation)
+		// matches the already evaluated one, help yourself to that value!
+		else if (consumer === this.lastConsumer) {
+			return this.lastSample;
+		}
 
-		this.next = this.evaluate();
+		this.next = this.evaluate(consumer);
 		const s = await this.next;
+		this.lastSample = s;
+		this.lastConsumer = consumer;
 		this.next = null;
 		return s;
 	}
@@ -48,9 +57,9 @@ export class DiscreteInput implements Input<DiscreteOutput> {
 		return this.remote;
 	}
 
-	public async read(): Promise<number> {
+	public async read(consumer: string): Promise<number> {
 		if (this.remote !== null) {
-			return this.remote.read();
+			return this.remote.read(consumer);
 		}
 		else {
 			return 0;

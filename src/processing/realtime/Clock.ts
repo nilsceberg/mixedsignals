@@ -3,6 +3,7 @@ import { observable } from "mobx";
 import { System } from "../System";
 import { DiscreteOutput, DiscreteInput } from "../../signals/Discrete";
 import { RealTimeOutput } from "../../signals/RealTime";
+import * as uuid from "uuid";
 import { time } from "../util";
 
 export class Clock extends System {
@@ -51,7 +52,7 @@ export class Clock extends System {
 			}
 
 			if (this.discrete.isConnected()) {
-				this.output.write(await this.discrete.read());
+				this.output.write(await this.discrete.read(uuid.v4()));
 			}
 			else {
 				this.output.write(0);

@@ -25,7 +25,7 @@ export class DiscreteSum extends System {
 		this.b = new DiscreteInput();
 
 		this.sum = new DiscreteOutput(
-			async () => this.aw * (await this.a.read()) + this.bw * (await this.b.read())
+			async (c) => this.aw * (await this.a.read(c)) + this.bw * (await this.b.read(c))
 		);
 	}
 

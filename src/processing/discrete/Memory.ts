@@ -2,6 +2,7 @@ import { observable, action } from "mobx";
 import { RealTimeInput, BufferOutput, SignalBuffer } from "../../signals/RealTime";
 import { System } from "../System";
 import { DiscreteInput } from "../../signals/Discrete";
+import * as uuid from "uuid";
 
 export class Memory extends System {
 	public readonly input: DiscreteInput;
@@ -32,7 +33,7 @@ export class Memory extends System {
 	public async fill() {
 		this.memory = [];
 		for (let i=0; i<this.length; ++i) {
-			this.memory.push(await this.input.read());
+			this.memory.push(await this.input.read(uuid.v4()));
 		}
 
 		this.buffer.write({

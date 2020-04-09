@@ -11,8 +11,8 @@ export class Delay extends System {
 	constructor() {
 		super();
 		this.input = new DiscreteInput();
-		this.output = new DiscreteOutput(async () => {
-			this.input.read().then(x => {
+		this.output = new DiscreteOutput(async (c) => {
+			this.input.read(c).then(x => {
 				this.next = x;
 			});
 			return this.next;
