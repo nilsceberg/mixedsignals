@@ -1,4 +1,6 @@
-export type SerializedSystem = { _: string };
+export interface SerializedSystem {
+	_: string; // called _ in order to minimize the serialized URL
+};
 
 export abstract class System {
 	public abstract serialize(): SerializedSystem;

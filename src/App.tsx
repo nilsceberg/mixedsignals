@@ -63,9 +63,10 @@ class AppState {
 	public get json(): string {
 		const serializedNodes: { [key: string]: any } = {};
 		for (const key in this.nodes) {
+			// The reason for calling these c and p is in order to minimize the URL
 			serializedNodes[key] = {
-				config: this.nodes[key].system.serialize(),
-				position: this.nodes[key].position,
+				c: this.nodes[key].system.serialize(), // config
+				p: this.nodes[key].position, // position
 			};
 		}
 
@@ -87,8 +88,8 @@ class AppState {
 
 		for (const id in config.nodes) {
 			const node = config.nodes[id];
-			const pos = node.position;
-			const cfg = node.config;
+			const pos = node.p; // position; see above
+			const cfg = node.c; // config
 			const uiNode = systemNames[cfg._].node;
 			const system = systemNames[cfg._].system;
 			this.placeSystem(system, uiNode, pos, id, cfg);
