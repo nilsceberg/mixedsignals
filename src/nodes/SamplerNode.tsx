@@ -8,7 +8,7 @@ import { NodeProps } from "./Node";
 import { SignalType } from "../editor/Types";
 
 export const SamplerNode = observer((props: NodeProps<Sampler>) => {
-	return <Node name="AD converter" io={[
+	return <Node name="Sampler" io={[
 		{direction: "input", name: "function", type: SignalType.Function},
 		{direction: "output", name: "discrete", type: SignalType.Discrete},
 		{direction: "output", name: "meta_freq", type: SignalType.Function},

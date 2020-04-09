@@ -83,7 +83,7 @@ export const Palette = (props: PaletteProps) => {
 		<Blueprint label="Clock" system={Clock} node={ClockNode} onPlace={onPlace}/>
 		<Divider/>
 		<Section label="Converters"/>
-		<Blueprint label="AD Converter" system={Sampler} node={SamplerNode} onPlace={onPlace}/>
+		<Blueprint label="Sampler" system={Sampler} node={SamplerNode} onPlace={onPlace}/>
 		{/*<Blueprint label="Memory" system={Memory} node={MemoryNode} onPlace={onPlace}/>*/}
 	</Box>;
 }
