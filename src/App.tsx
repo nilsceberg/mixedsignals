@@ -62,8 +62,11 @@ class AppState {
 	@computed
 	public get json(): string {
 		const serializedNodes: { [key: string]: any } = {};
-		for (const key in state.nodes) {
-			serializedNodes[key] = state.nodes[key].system.serialize();
+		for (const key in this.nodes) {
+			serializedNodes[key] = {
+				config: this.nodes[key].system.serialize(),
+				position: this.nodes[key].position,
+			};
 		}
 
 		return JSON.stringify({
@@ -77,10 +80,12 @@ class AppState {
 		const config = JSON.parse(json);
 
 		for (const id in config.nodes) {
-			const cfg = config.nodes[id];
+			const node = config.nodes[id];
+			const pos = node.position;
+			const cfg = node.config;
 			const uiNode = systemNames[cfg._].node;
 			const system = systemNames[cfg._].system;
-			this.placeSystem(system, uiNode, { x: Math.random() * 1600, y: Math.random() * 800}, id, cfg);
+			this.placeSystem(system, uiNode, pos, id, cfg);
 		}
 
 		for (const connection of config.graph) {
