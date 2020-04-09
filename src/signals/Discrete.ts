@@ -1,22 +1,35 @@
 import { Input, Output } from "./IO";
 
-export type Next = () => Promise<number>;
+export type DiscreteFunction = () => Promise<number>;
 
 export class DiscreteOutput implements Output {
-	private next: Next;
+	private f: DiscreteFunction;
+	private next: Promise<number> | null;
 
-	constructor(next: Next) {
-		this.next = next;
+	constructor(f: DiscreteFunction) {
+		this.f = f;
+		this.next = null;
 	}
 
-	async read(): Promise<number> {
-		let s = await this.next();
+	private async evaluate(): Promise<number> {
+		let s = await this.f();
 		if (isNaN(s)) {
 			return 0;
 		}
 		else {
 			return s;
 		}
+	}
+
+	async read(): Promise<number> {
+		if (this.next) {
+			return await this.next;
+		}
+
+		this.next = this.evaluate();
+		const s = await this.next;
+		this.next = null;
+		return s;
 	}
 }
 
