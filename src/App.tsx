@@ -52,8 +52,10 @@ interface SystemNode {
 
 class AppState {
 	@observable
-	public nodes: {[id: string]: SystemNode} = {
-	}
+	public nodes: {[id: string]: SystemNode} = {};
+
+	@observable
+	public graph: Connection[] = [];
 }
 
 const state = new AppState();
@@ -67,10 +69,6 @@ export const App = withStyles(styles)(observer((props: { classes: Classes }) => 
 		}
 	}));
 
-	const [ graph, setGraph ] = useState<Connection[]>([
-		//[["source", "signal"], ["fourier", "input"]],
-	]);
-
 	const [ open, setOpen ] = useState<boolean>(false);
 
 	const addConnection = (connection: Connection) => {
@@ -82,9 +80,8 @@ export const App = withStyles(styles)(observer((props: { classes: Classes }) => 
 
 		input.connect(output);
 
-		const newGraph = [...graph, connection];
-		console.log("new connection: ", newGraph);
-		setGraph(newGraph);
+		state.graph = [...state.graph, connection];
+		console.log("new connection", state.graph);
 	};
 
 	const removeConnection = (connection: Connection) => {
@@ -104,9 +101,8 @@ export const App = withStyles(styles)(observer((props: { classes: Classes }) => 
 			input.connect(null);
 		}
 
-		const newGraph = graph.filter(c => !(connectionEquals(c, connection)));
-		console.log("removed connection: ", newGraph);
-		setGraph(newGraph);
+		state.graph = state.graph.filter(c => !(connectionEquals(c, connection)));
+		console.log("removed connection: ", state.graph);
 	}
 
 	const placeSystem = (system: SystemConstructor, node: any, position: { x: number, y: number }) => {
@@ -119,7 +115,7 @@ export const App = withStyles(styles)(observer((props: { classes: Classes }) => 
 		};
 	}
 
-	console.log(graph);
+	console.log(state.graph);
 
 	const nodes: React.ReactNode[] = [];
 	for (const id in state.nodes) {
@@ -153,7 +149,7 @@ export const App = withStyles(styles)(observer((props: { classes: Classes }) => 
 					}}/>}/>
 				</Box>
 			</AppBar>
-			<Editor graph={graph} onConnectionCreated={addConnection} onConnectionDeleted={removeConnection} colors={{
+			<Editor graph={state.graph} onConnectionCreated={addConnection} onConnectionDeleted={removeConnection} colors={{
 				[SignalType.Function]: "yellow",
 				[SignalType.RealTime]: "red",
 				[SignalType.Discrete]: "blue",
