@@ -73,7 +73,7 @@ export class Clock extends System {
 
 	public serialize() {
 		return {
-			frequency: this.frequency,
+			f: this.frequency,
 		};
 	}
 }

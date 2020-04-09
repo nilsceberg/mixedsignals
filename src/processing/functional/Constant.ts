@@ -18,7 +18,7 @@ export class Constant extends System {
 
 	public serialize() {
 		return {
-			value: this.value,
+			v: this.value,
 		};
 	}
 }

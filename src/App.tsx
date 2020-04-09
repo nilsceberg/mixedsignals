@@ -6,7 +6,7 @@ import { Editor } from "./editor/Editor";
 import { Connection, connectionEquals, SignalType } from "./editor/Types";
 import { Palette } from "./Palette";
 import { SystemConstructor, System } from "./processing/System";
-import { observable } from "mobx";
+import { observable, autorun, computed } from "mobx";
 import { Output, Input } from "./signals/IO";
 import * as uuid from "uuid";
 import { observer } from "mobx-react";
@@ -51,14 +51,34 @@ interface SystemNode {
 }
 
 class AppState {
+	//public idCounter: number = 0;
+
 	@observable
 	public nodes: {[id: string]: SystemNode} = {};
 
 	@observable
 	public graph: Connection[] = [];
+
+	@computed
+	public get json(): any {
+		const serializedNodes: { [key: string]: any } = {};
+		for (const key in state.nodes) {
+			serializedNodes[key] = state.nodes[key].system.serialize();
+		}
+
+		return JSON.stringify({
+			nodes: serializedNodes,
+			graph: this.graph,
+		});
+	}
 }
 
 const state = new AppState();
+
+autorun(() => {
+	console.log(state.json);
+	window.location.hash = btoa(state.json);
+});
 
 export const App = withStyles(styles)(observer((props: { classes: Classes }) => {
 	console.log("render");
