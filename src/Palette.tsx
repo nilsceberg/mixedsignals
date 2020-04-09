@@ -81,7 +81,7 @@ export const Palette = (props: PaletteProps) => {
 		<Divider/>
 		<Section label="Buffers"/>
 		<Blueprint label="Buffer Graph" system={Graph} node={GraphNode} onPlace={onPlace}/>
-		<Blueprint label="Source" system={Source} node={SourceNode} onPlace={onPlace}/>
+		<Blueprint label="JSON Source" system={Source} node={SourceNode} onPlace={onPlace}/>
 		<Divider/>
 		<Section label="Real-Time"/>
 		<Blueprint label="Clock" system={Clock} node={ClockNode} onPlace={onPlace}/>
