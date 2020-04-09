@@ -29,6 +29,8 @@ import { Clock } from "./processing/realtime/Clock";
 import { ClockNode } from "./nodes/ClockNode";
 import { Impulse } from "./processing/discrete/Impulse";
 import { ImpulseNode } from "./nodes/ImpulseNode";
+import { SourceNode } from "./nodes/SourceNode";
+import { Source } from "./processing/buffers/Source";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
 	container: {
@@ -79,6 +81,7 @@ export const Palette = (props: PaletteProps) => {
 		<Divider/>
 		<Section label="Buffers"/>
 		<Blueprint label="Buffer Graph" system={Graph} node={GraphNode} onPlace={onPlace}/>
+		<Blueprint label="Source" system={Source} node={SourceNode} onPlace={onPlace}/>
 		<Divider/>
 		<Section label="Real-Time"/>
 		<Blueprint label="Clock" system={Clock} node={ClockNode} onPlace={onPlace}/>
@@ -107,4 +110,5 @@ export const systemNames: { [name: string]: { node: any, system: SystemConstruct
 	"di": { node: DisplayNode, system: Display },
 	"sa": { node: SamplerNode, system: Sampler },
 	"m": { node: MemoryNode, system: Memory },
+	"src": { node: SourceNode, system: Source },
 }
