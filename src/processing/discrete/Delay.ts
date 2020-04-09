@@ -1,19 +1,21 @@
 import { observable } from "mobx";
-import { RealTimeInput, RealTimeOutput } from "../../signals/RealTime";
 import { System } from "../System";
+import { DiscreteInput, DiscreteOutput } from "../../signals/Discrete";
 
 export class Delay extends System {
-	public readonly input: RealTimeInput;
-	public readonly output: RealTimeOutput;
+	public readonly input: DiscreteInput;
+	public readonly output: DiscreteOutput;
 
-	private previous: number = 0;
+	private next: number = 0;
 
 	constructor() {
 		super();
-		this.output = new RealTimeOutput();
-		this.input = new RealTimeInput(x => {
-			this.output.write(this.previous);
-			this.previous = x;
+		this.input = new DiscreteInput();
+		this.output = new DiscreteOutput(async () => {
+			this.input.read().then(x => {
+				this.next = x;
+			});
+			return this.next;
 		});
 	}
 }

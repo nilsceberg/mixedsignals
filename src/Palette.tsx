@@ -13,8 +13,8 @@ import { Memory } from "./processing/discrete/Memory";
 import { Constant } from "./processing/functional/Constant";
 import { Graph } from "./processing/discrete/Graph";
 import { RealtimeVisualizer } from "./processing/discrete/RealtimeVisualizer";
-import { DigitalSum } from "./processing/discrete/DigitalSum";
-import { DigitalSumNode } from "./nodes/DigitalSumNode";
+import { DiscreteSum } from "./processing/discrete/DiscreteSum";
+import { DiscreteSumNode } from "./nodes/DiscreteSumNode";
 import { RelayNode } from "./nodes/RelayNode";
 import { DelayNode } from "./nodes/DelayNode";
 import { Relay } from "./processing/discrete/Relay";
@@ -70,10 +70,10 @@ export const Palette = (props: PaletteProps) => {
 		<Blueprint label="Sum" system={Sum} node={SumNode} onPlace={onPlace}/>
 		<Divider/>
 		<Section label="Discrete"/>
-		{/*<Blueprint label="Delay" system={Delay} node={DelayNode} onPlace={onPlace}/>
-		<Blueprint label="Relay" system={Relay} node={RelayNode} onPlace={onPlace}/>*/}
+		<Blueprint label="Delay" system={Delay} node={DelayNode} onPlace={onPlace}/>
+		{/*<Blueprint label="Relay" system={Relay} node={RelayNode} onPlace={onPlace}/>*/}
 		<Blueprint label="Display" system={Display} node={DisplayNode} onPlace={onPlace}/>
-		{/*<Blueprint label="Discrete Sum" system={DigitalSum} node={DigitalSumNode} onPlace={onPlace}/>*/}
+		<Blueprint label="Discrete Sum" system={DiscreteSum} node={DiscreteSumNode} onPlace={onPlace}/>
 		<Blueprint label="Real-Time Visualizer" system={RealtimeVisualizer} node={RealtimeVisualizerNode} onPlace={onPlace}/>
 		{/*<Divider/>
 		<Section label="Buffers"/>
