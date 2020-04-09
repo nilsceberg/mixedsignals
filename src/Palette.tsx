@@ -76,9 +76,9 @@ export const Palette = (props: PaletteProps) => {
 		{/*<Blueprint label="Relay" system={Relay} node={RelayNode} onPlace={onPlace}/>*/}
 		<Blueprint label="Discrete Sum" system={DiscreteSum} node={DiscreteSumNode} onPlace={onPlace}/>
 		<Blueprint label="Interactive Impulse" system={Impulse} node={ImpulseNode} onPlace={onPlace}/>
-		{/*<Divider/>
+		<Divider/>
 		<Section label="Buffers"/>
-		<Blueprint label="Buffer Graph" system={Graph} node={GraphNode} onPlace={onPlace}/>*/}
+		<Blueprint label="Buffer Graph" system={Graph} node={GraphNode} onPlace={onPlace}/>
 		<Divider/>
 		<Section label="Real-Time"/>
 		<Blueprint label="Clock" system={Clock} node={ClockNode} onPlace={onPlace}/>
@@ -87,7 +87,7 @@ export const Palette = (props: PaletteProps) => {
 		<Divider/>
 		<Section label="Converters"/>
 		<Blueprint label="Sampler" system={Sampler} node={SamplerNode} onPlace={onPlace}/>
-		{/*<Blueprint label="Memory" system={Memory} node={MemoryNode} onPlace={onPlace}/>*/}
+		<Blueprint label="Memory" system={Memory} node={MemoryNode} onPlace={onPlace}/>
 	</Box>;
 }
 

@@ -1,39 +1,50 @@
 import { observable, action } from "mobx";
 import { RealTimeInput, BufferOutput, SignalBuffer } from "../../signals/RealTime";
 import { System } from "../System";
+import { DiscreteInput } from "../../signals/Discrete";
 
 export class Memory extends System {
-	public readonly input: RealTimeInput;
+	public readonly input: DiscreteInput;
 	public readonly buffer: BufferOutput;
 
 	@observable
 	public length: number;
 
-	@observable
 	public memory: number[] = [];
 
-	constructor() {
+	constructor(config?: any) {
 		super();
+
 		this.length = 20;
+
+		if (config) {
+			this.length = config.l;
+		}
 		
 		for (let i=0; i<this.length; ++i) {
 			this.memory.push(0);
 		}
 
+		this.input = new DiscreteInput();
 		this.buffer = new BufferOutput();
-		this.input = new RealTimeInput(action((x: number) => {
-			this.memory.shift();
-			this.memory.push(x);
-			this.buffer.write({
-				samples: this.memory.slice(),
-				length: this.length,
-			});
-		}));
+	}
+
+	public async fill() {
+		this.memory = [];
+		for (let i=0; i<this.length; ++i) {
+			this.memory.push(await this.input.read());
+		}
+
+		this.buffer.write({
+			length: this.length,
+			samples: this.memory,
+		});
 	}
 
 	public serialize() {
 		return {
-			_: "m"
+			_: "m",
+			l: this.length,
 		};
 	}
 }
