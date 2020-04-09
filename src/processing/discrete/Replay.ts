@@ -21,6 +21,10 @@ export class Replay extends System {
 		});
 
 		this.signal = new DiscreteOutput(async () => {
+			if (this.samples.length === 0) {
+				return 0;
+			}
+
 			this.i = this.i % this.samples.length;
 			const sample = this.samples[this.i];
 			this.i++;

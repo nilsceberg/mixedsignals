@@ -8,6 +8,7 @@ import { observer } from "mobx-react";
 import { NodeProps } from "./Node";
 import { Graph } from "../processing/discrete/Graph";
 import { RealtimeVisualizer } from "../processing/realtime/RealtimeVisualizer";
+import { TextField } from "@material-ui/core";
 
 @observer
 export class RealtimeVisualizerNode extends React.Component<NodeProps<RealtimeVisualizer>, { largest: number }> {
@@ -62,7 +63,8 @@ export class RealtimeVisualizerNode extends React.Component<NodeProps<RealtimeVi
 							}
 						}]
 					}
-				}}/>
+				}}/><br/>
+				<TextField value={this.props.process.step} onChange={event => this.props.process.step = Number.parseInt(event.target.value)} size="small" variant="outlined" label="Samples to skip" type="number"/><br/>
 			</Node>;
 	}
 }

@@ -13,7 +13,11 @@ export class RealtimeVisualizer extends System {
 	@observable
 	public samples: number[] = [];
 
+	@observable
+	public step: number = 1;
+
 	private i: number = 0;
+	private skip: number;
 
 	@action
 	private updateLength(length: number) {
@@ -32,28 +36,38 @@ export class RealtimeVisualizer extends System {
 		this.currentLength = length;
 	}
 
-	constructor() {
+	constructor(config?: any) {
 		super();
-
 		this.length = new FunctionInput();
+		
+		if (config) {
+			this.step = config.s;
+		}
+		this.skip = this.step;
 
 		this.updateLength(this.currentLength);
 
-		this.input = new RealTimeInput(x => {
-			this.updateLength(this.length.sample(0));
+		this.input = new RealTimeInput(action(x => {
+			if (this.step < this.skip) {
+				this.skip = this.step;
+			}
 
-			if (this.currentLength === 0) {
+			if (--this.skip > 0) {
 				return;
 			}
 
+			this.skip = this.step;
+			this.updateLength(this.length.sample(0));
+
 			this.i = this.i % this.currentLength;
 			this.samples[this.i++] = x;
-		});
+		}));
 	}
 
 	public serialize() {
 		return {
 			_: "rtv",
+			s: this.step,
 		};
 	}
 }
