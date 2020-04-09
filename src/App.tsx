@@ -6,7 +6,7 @@ import { Editor } from "./editor/Editor";
 import { Connection, connectionEquals, SignalType } from "./editor/Types";
 import { Palette, systemNames } from "./Palette";
 import { SystemConstructor, System } from "./processing/System";
-import { observable, autorun, computed } from "mobx";
+import { observable, autorun, computed, action } from "mobx";
 import { Output, Input } from "./signals/IO";
 import * as uuid from "uuid";
 import { observer } from "mobx-react";
@@ -91,6 +91,57 @@ class AppState {
 		}
 
 		this.graph = config.graph;
+
+		for (const connection of this.graph) {
+			this.addConnection(connection);
+		}
+	}
+
+	@action
+	public addConnection(connection: Connection) {
+		const [outputConnector, inputConnector] = connection;
+
+		// We assume that all parts of this connection exist
+		const output: Output = (this.nodes[outputConnector[0]].system as any)[outputConnector[1]];
+		const input: Input<Output> = (this.nodes[inputConnector[0]].system as any)[inputConnector[1]];
+
+		input.connect(output);
+
+		this.graph = [...this.graph, connection];
+		console.log("new connection", this.graph);
+	}
+
+	@action
+	public removeConnection(connection: Connection) {
+		const [outputConnector, inputConnector] = connection;
+
+		// We assume that all parts of this connection exist
+		const output: Output = (this.nodes[outputConnector[0]].system as any)[outputConnector[1]];
+		const input: Input<Output> = (this.nodes[inputConnector[0]].system as any)[inputConnector[1]];
+
+		// Before disconnecting, we need to check that the existing connection
+		// actually is the one we want to remove. When swappnig a connection at
+		// an input, the remove event is sent after the add event, which means that
+		// if we're not careful we'll disconnect the newly attached connection
+		// (which will also be inconsistent with the UI).
+
+		if (input.getRemote() === output) {
+			input.connect(null);
+		}
+
+		this.graph = this.graph.filter(c => !(connectionEquals(c, connection)));
+		console.log("removed connection: ", this.graph);
+	}
+
+	@action
+	public placeSystem(system: SystemConstructor, node: any, position: { x: number, y: number }) {
+		console.log(`Placing ${system.name} at ${position.x}, ${position.y}.`);
+		const id = uuid.v4();
+		this.nodes[id] = {
+			system: new system(),
+			uiNode: node,
+			initialPosition: position,
+		};
 	}
 }
 
@@ -123,49 +174,6 @@ export const App = withStyles(styles)(observer((props: { classes: Classes }) => 
 
 	const [ open, setOpen ] = useState<boolean>(false);
 
-	const addConnection = (connection: Connection) => {
-		const [outputConnector, inputConnector] = connection;
-
-		// We assume that all parts of this connection exist
-		const output: Output = (state.nodes[outputConnector[0]].system as any)[outputConnector[1]];
-		const input: Input<Output> = (state.nodes[inputConnector[0]].system as any)[inputConnector[1]];
-
-		input.connect(output);
-
-		state.graph = [...state.graph, connection];
-		console.log("new connection", state.graph);
-	};
-
-	const removeConnection = (connection: Connection) => {
-		const [outputConnector, inputConnector] = connection;
-
-		// We assume that all parts of this connection exist
-		const output: Output = (state.nodes[outputConnector[0]].system as any)[outputConnector[1]];
-		const input: Input<Output> = (state.nodes[inputConnector[0]].system as any)[inputConnector[1]];
-
-		// Before disconnecting, we need to check that the existing connection
-		// actually is the one we want to remove. When swappnig a connection at
-		// an input, the remove event is sent after the add event, which means that
-		// if we're not careful we'll disconnect the newly attached connection
-		// (which will also be inconsistent with the UI).
-
-		if (input.getRemote() === output) {
-			input.connect(null);
-		}
-
-		state.graph = state.graph.filter(c => !(connectionEquals(c, connection)));
-		console.log("removed connection: ", state.graph);
-	}
-
-	const placeSystem = (system: SystemConstructor, node: any, position: { x: number, y: number }) => {
-		console.log(`Placing ${system.name} at ${position.x}, ${position.y}.`);
-		const id = uuid.v4();
-		state.nodes[id] = {
-			system: new system(),
-			uiNode: node,
-			initialPosition: position,
-		};
-	}
 
 	console.log(state.graph);
 
@@ -201,7 +209,7 @@ export const App = withStyles(styles)(observer((props: { classes: Classes }) => 
 					}}/>}/>
 				</Box>
 			</AppBar>
-			<Editor graph={state.graph} onConnectionCreated={addConnection} onConnectionDeleted={removeConnection} colors={{
+			<Editor graph={state.graph} onConnectionCreated={state.addConnection.bind(state)} onConnectionDeleted={state.removeConnection.bind(state)} colors={{
 				[SignalType.Function]: "yellow",
 				[SignalType.RealTime]: "red",
 				[SignalType.Discrete]: "blue",
@@ -209,7 +217,7 @@ export const App = withStyles(styles)(observer((props: { classes: Classes }) => 
 			}}>
 				{nodes}
 			</Editor>
-			<Palette onPlace={placeSystem}/>
+			<Palette onPlace={state.placeSystem.bind(state)}/>
 		</ThemeProvider>
 	</div>;
 }));
