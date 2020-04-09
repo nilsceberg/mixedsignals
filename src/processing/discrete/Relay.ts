@@ -16,6 +16,8 @@ export class Relay extends System {
 	}
 
 	public serialize() {
-		return {};
+		return {
+			_: "r"
+		};
 	}
 }

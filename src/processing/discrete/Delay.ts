@@ -20,6 +20,8 @@ export class Delay extends System {
 	}
 
 	public serialize() {
-		return {};
+		return {
+			_: "d"
+		};
 	}
 }

@@ -14,6 +14,8 @@ export class Graph extends System {
 	}
 
 	public serialize() {
-		return {};
+		return {
+			_: "g",
+		};
 	}
 }

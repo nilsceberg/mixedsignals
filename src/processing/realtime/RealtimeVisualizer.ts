@@ -49,6 +49,8 @@ export class RealtimeVisualizer extends System {
 	}
 
 	public serialize() {
-		return {};
+		return {
+			_: "rtv",
+		};
 	}
 }

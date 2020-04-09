@@ -18,6 +18,7 @@ export class Constant extends System {
 
 	public serialize() {
 		return {
+			_: "c",
 			v: this.value,
 		};
 	}

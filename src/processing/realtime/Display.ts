@@ -14,6 +14,8 @@ export class Display extends System {
 	}
 
 	public serialize() {
-		return {};
+		return {
+			_: "di",
+		};
 	}
 }

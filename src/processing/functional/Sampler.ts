@@ -35,6 +35,7 @@ export class Sampler extends System {
 
 	public serialize() {
 		return {
+			_: "sa",
 			f: this.frequency,
 		};
 	}

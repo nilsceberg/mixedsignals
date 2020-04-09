@@ -26,6 +26,7 @@ export class DiscreteSum extends System {
 
 	public serialize() {
 		return {
+			_: "ds",
 			aw: this.aw,
 			bw: this.bw,
 		};

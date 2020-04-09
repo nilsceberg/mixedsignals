@@ -23,6 +23,7 @@ export class Sum extends System {
 
 	public serialize() {
 		return {
+			_: "su",
 			aw: this.aw,
 			bw: this.bw,
 		};

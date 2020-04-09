@@ -24,6 +24,7 @@ export class Sine extends System {
 
 	public serialize() {
 		return {
+			_: "s",
 			f: this.frequency,
 			a: this.amplitude,
 			p: this.phase,

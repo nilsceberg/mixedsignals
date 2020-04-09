@@ -90,3 +90,21 @@ export const Palette = (props: PaletteProps) => {
 		{/*<Blueprint label="Memory" system={Memory} node={MemoryNode} onPlace={onPlace}/>*/}
 	</Box>;
 }
+
+// Short names for URL serialization (should definitely not be in this file,
+// but I already had all the imports here. :) )
+export const systemNames: { [name: string]: { node: any, system: SystemConstructor } } = {
+	"s": { node: SineNode, system: Sine },
+	"c": { node: ConstantNode, system: Constant },
+	"su": { node: SumNode, system: Sum },
+	"d": { node: DelayNode, system: Delay },
+	"r": { node: RelayNode, system: Relay },
+	"ds": { node: DiscreteSumNode, system: DiscreteSum },
+	"i": { node: ImpulseNode, system: Impulse },
+	"g": { node: GraphNode, system: Graph },
+	"cl": { node: ClockNode, system: Clock },
+	"rtv": { node: RealtimeVisualizerNode, system: RealtimeVisualizer },
+	"di": { node: DisplayNode, system: Display },
+	"sa": { node: SamplerNode, system: Sampler },
+	"m": { node: MemoryNode, system: Memory },
+}

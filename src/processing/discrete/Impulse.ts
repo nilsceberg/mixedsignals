@@ -18,6 +18,8 @@ export class Impulse extends System {
 	}
 
 	public serialize() {
-		return {};
+		return {
+			_: "i"
+		};
 	}
 }
