@@ -15,4 +15,3 @@ export const ImpulseNode = observer((props: NodeProps<Impulse>) => {
 			onClick={() => props.process.pulse = true}>Trigger</Button>
 	</Node>;
 });
-

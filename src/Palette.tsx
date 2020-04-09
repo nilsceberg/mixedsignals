@@ -31,6 +31,8 @@ import { Impulse } from "./processing/discrete/Impulse";
 import { ImpulseNode } from "./nodes/ImpulseNode";
 import { SourceNode } from "./nodes/SourceNode";
 import { Source } from "./processing/buffers/Source";
+import { ReplayNode } from "./nodes/ReplayNode";
+import { Replay } from "./processing/discrete/Replay";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
 	container: {
@@ -91,6 +93,7 @@ export const Palette = (props: PaletteProps) => {
 		<Section label="Converters"/>
 		<Blueprint label="Sampler" system={Sampler} node={SamplerNode} onPlace={onPlace}/>
 		<Blueprint label="Memory" system={Memory} node={MemoryNode} onPlace={onPlace}/>
+		<Blueprint label="Replay" system={Replay} node={ReplayNode} onPlace={onPlace}/>
 	</Box>;
 }
 
@@ -111,4 +114,5 @@ export const systemNames: { [name: string]: { node: any, system: SystemConstruct
 	"sa": { node: SamplerNode, system: Sampler },
 	"m": { node: MemoryNode, system: Memory },
 	"src": { node: SourceNode, system: Source },
+	"rp": { node: ReplayNode, system: Replay },
 }
