@@ -75,6 +75,7 @@ class AppState {
 			version: "0.1.0",
 			nodes: serializedNodes,
 			graph: this.graph,
+			id: this.idCounter,
 		});
 	}
 
@@ -87,6 +88,7 @@ class AppState {
 	@action
 	load(json: string) {
 		const config = JSON.parse(json);
+		this.idCounter = config.id;
 
 		for (const id in config.nodes) {
 			const node = config.nodes[id];
