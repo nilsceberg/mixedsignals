@@ -7,7 +7,7 @@ import { SignalType } from "../editor/Types";
 import { observer } from "mobx-react";
 import { NodeProps } from "./Node";
 import { Graph } from "../processing/discrete/Graph";
-import { RealtimeVisualizer } from "../processing/discrete/RealtimeVisualizer";
+import { RealtimeVisualizer } from "../processing/realtime/RealtimeVisualizer";
 
 @observer
 export class RealtimeVisualizerNode extends React.Component<NodeProps<RealtimeVisualizer>, { largest: number }> {

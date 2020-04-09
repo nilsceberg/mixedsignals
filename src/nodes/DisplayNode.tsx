@@ -5,7 +5,7 @@ import { observer } from "mobx-react";
 import { Node } from "../editor/Node";
 import { NodeProps } from "./Node";
 import { SignalType } from "../editor/Types";
-import { Display } from "../processing/discrete/Display";
+import { Display } from "../processing/realtime/Display";
 
 export const DisplayNode = observer((props: NodeProps<Display>) => {
 	return <Node name="Display" io={[{direction: "input", name: "signal", type: SignalType.RealTime}]} {...props}>
