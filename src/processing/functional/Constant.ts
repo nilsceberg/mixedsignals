@@ -9,8 +9,13 @@ export class Constant extends System {
 	@observable
 	public value: number = 0;
 
-	constructor() {
+	constructor(config?: any) {
 		super();
+
+		if (config) {
+			this.value = config.v;
+		}
+
 		this.constant = new FunctionOutput(
 			t => this.value
 		);

@@ -81,7 +81,7 @@ class AppState {
 			const system = systemNames[cfg._].system;
 
 			this.nodes[id] = {
-				system: new system(),
+				system: new system(cfg),
 				uiNode: uiNode,
 				initialPosition: {
 					x: Math.random() * 500,

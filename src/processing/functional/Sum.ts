@@ -13,13 +13,18 @@ export class Sum extends System {
 	@observable
 	public bw: number = 1;
 
-	constructor() {
+	constructor(config?: any) {
 		super();
+
+		if (config) {
+			this.aw = config.aw;
+			this.bw = config.bw;
+		}
+
 		this.a = new FunctionInput();
 		this.b = new FunctionInput();
 		this.sum = new FunctionOutput(t => this.aw * this.a.sample(t) + this.bw * this.b.sample(t));
 	}
-
 
 	public serialize() {
 		return {

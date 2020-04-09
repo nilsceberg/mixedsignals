@@ -15,8 +15,15 @@ export class Sine extends System {
 	@observable
 	public phase: number = 0;
 
-	constructor() {
+	constructor(config?: any) {
 		super();
+
+		if (config) {
+			this.frequency = config.f;
+			this.amplitude = config.a;
+			this.phase = config.p;
+		}
+
 		this.signal = new FunctionOutput(
 			t => this.amplitude * Math.sin(2.0 * Math.PI * this.frequency * t + this.phase)
 		);

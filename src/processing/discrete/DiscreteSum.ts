@@ -13,8 +13,13 @@ export class DiscreteSum extends System {
 	@observable
 	public bw: number = 1;
 
-	constructor() {
+	constructor(config?: any) {
 		super();
+
+		if (config) {
+			this.aw = config.aw;
+			this.bw = config.bw;
+		}
 
 		this.a = new DiscreteInput();
 		this.b = new DiscreteInput();

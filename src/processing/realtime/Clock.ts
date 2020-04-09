@@ -23,8 +23,12 @@ export class Clock extends System {
 	private samplesThisSecond: number = 0;
 	private frequencyCounter: NodeJS.Timeout;
 
-	constructor() {
+	constructor(config?: any) {
 		super();
+		
+		if (config) {
+			this.frequency = config.f;
+		}
 
 		this.discrete = new DiscreteInput();
 		this.output = new RealTimeOutput();

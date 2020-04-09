@@ -16,8 +16,12 @@ export class Sampler extends System {
 
 	public t: number = 0;
 
-	constructor() {
+	constructor(config?: any) {
 		super();
+
+		if (config) {
+			this.frequency = config.f;
+		}
 
 		this.function = new FunctionInput();
 		this.discrete = new DiscreteOutput(async () => {
