@@ -27,6 +27,8 @@ import { SamplerNode } from "./nodes/SamplerNode";
 import { RealtimeVisualizerNode } from "./nodes/RealtimeVisualizerNode";
 import { Clock } from "./processing/realtime/Clock";
 import { ClockNode } from "./nodes/ClockNode";
+import { Impulse } from "./processing/discrete/Impulse";
+import { ImpulseNode } from "./nodes/ImpulseNode";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
 	container: {
@@ -74,13 +76,14 @@ export const Palette = (props: PaletteProps) => {
 		{/*<Blueprint label="Relay" system={Relay} node={RelayNode} onPlace={onPlace}/>*/}
 		<Blueprint label="Display" system={Display} node={DisplayNode} onPlace={onPlace}/>
 		<Blueprint label="Discrete Sum" system={DiscreteSum} node={DiscreteSumNode} onPlace={onPlace}/>
-		<Blueprint label="Real-Time Visualizer" system={RealtimeVisualizer} node={RealtimeVisualizerNode} onPlace={onPlace}/>
+		<Blueprint label="Interactive Impulse" system={Impulse} node={ImpulseNode} onPlace={onPlace}/>
 		{/*<Divider/>
 		<Section label="Buffers"/>
 		<Blueprint label="Buffer Graph" system={Graph} node={GraphNode} onPlace={onPlace}/>*/}
 		<Divider/>
 		<Section label="Real-Time"/>
 		<Blueprint label="Clock" system={Clock} node={ClockNode} onPlace={onPlace}/>
+		<Blueprint label="Real-Time Visualizer" system={RealtimeVisualizer} node={RealtimeVisualizerNode} onPlace={onPlace}/>
 		<Divider/>
 		<Section label="Converters"/>
 		<Blueprint label="Sampler" system={Sampler} node={SamplerNode} onPlace={onPlace}/>
