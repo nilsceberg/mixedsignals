@@ -8,7 +8,7 @@ import { SignalType } from "../editor/Types";
 import { DiscreteSum } from "../processing/discrete/DiscreteSum";
 
 export const DiscreteSumNode = observer((props: NodeProps<DiscreteSum>) => {
-	return <Node name="Digital Sum" io={[
+	return <Node name="Discrete Sum" io={[
 		{direction: "input", name: "a", type: SignalType.Discrete},
 		{direction: "input", name: "b", type: SignalType.Discrete},
 		{direction: "output", name: "sum", type: SignalType.Discrete},
