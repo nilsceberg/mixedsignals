@@ -39,9 +39,10 @@ export class RealtimeVisualizerNode extends React.Component<NodeProps<RealtimeVi
 						label: "signal",
 						fill: false,
 						showLine: true,
-						backgroundColor: "#fff",
+						backgroundColor: "#aaa",
 						tension: 0,
-						borderWidth: 2,
+						borderWidth: 1,
+						pointRadius: 1,
 						borderColor: "#aaa",
 						data: this.props.process.samples.map((y, n) => ({x: n, y: y})),
 					}]
