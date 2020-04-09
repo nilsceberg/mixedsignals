@@ -74,7 +74,6 @@ export const Palette = (props: PaletteProps) => {
 		<Section label="Discrete"/>
 		<Blueprint label="Delay" system={Delay} node={DelayNode} onPlace={onPlace}/>
 		{/*<Blueprint label="Relay" system={Relay} node={RelayNode} onPlace={onPlace}/>*/}
-		<Blueprint label="Display" system={Display} node={DisplayNode} onPlace={onPlace}/>
 		<Blueprint label="Discrete Sum" system={DiscreteSum} node={DiscreteSumNode} onPlace={onPlace}/>
 		<Blueprint label="Interactive Impulse" system={Impulse} node={ImpulseNode} onPlace={onPlace}/>
 		{/*<Divider/>
@@ -84,6 +83,7 @@ export const Palette = (props: PaletteProps) => {
 		<Section label="Real-Time"/>
 		<Blueprint label="Clock" system={Clock} node={ClockNode} onPlace={onPlace}/>
 		<Blueprint label="Real-Time Visualizer" system={RealtimeVisualizer} node={RealtimeVisualizerNode} onPlace={onPlace}/>
+		<Blueprint label="Display" system={Display} node={DisplayNode} onPlace={onPlace}/>
 		<Divider/>
 		<Section label="Converters"/>
 		<Blueprint label="Sampler" system={Sampler} node={SamplerNode} onPlace={onPlace}/>
