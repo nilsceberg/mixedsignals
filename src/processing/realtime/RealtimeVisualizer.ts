@@ -47,4 +47,8 @@ export class RealtimeVisualizer extends System {
 			this.samples[this.i++] = x;
 		});
 	}
+
+	public serialize() {
+		return {};
+	}
 }

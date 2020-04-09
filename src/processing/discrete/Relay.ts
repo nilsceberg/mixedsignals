@@ -14,4 +14,8 @@ export class Relay extends System {
 			this.output.write(x);
 		});
 	}
+
+	public serialize() {
+		return {};
+	}
 }

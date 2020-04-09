@@ -23,4 +23,11 @@ export class DiscreteSum extends System {
 			async () => this.aw * (await this.a.read()) + this.bw * (await this.b.read())
 		);
 	}
+
+	public serialize() {
+		return {
+			aw: this.aw,
+			bw: this.bw,
+		};
+	}
 }

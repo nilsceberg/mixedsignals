@@ -12,4 +12,8 @@ export class Graph extends System {
 		super();
 		this.buffer = new BufferInput(buffer => this.samples = buffer.samples);
 	}
+
+	public serialize() {
+		return {};
+	}
 }

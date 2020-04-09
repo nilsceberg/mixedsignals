@@ -18,4 +18,8 @@ export class Delay extends System {
 			return this.next;
 		});
 	}
+
+	public serialize() {
+		return {};
+	}
 }

@@ -30,4 +30,8 @@ export class Memory extends System {
 			});
 		}));
 	}
+
+	public serialize() {
+		return {};
+	}
 }

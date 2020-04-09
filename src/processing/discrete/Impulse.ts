@@ -16,4 +16,8 @@ export class Impulse extends System {
 			return sample;
 		});
 	}
+
+	public serialize() {
+		return {};
+	}
 }

@@ -21,4 +21,12 @@ export class Sine extends System {
 			t => this.amplitude * Math.sin(2.0 * Math.PI * this.frequency * t + this.phase)
 		);
 	}
+
+	public serialize() {
+		return {
+			frequency: this.frequency,
+			amplitude: this.amplitude,
+			phase: this.phase,
+		};
+	}
 }

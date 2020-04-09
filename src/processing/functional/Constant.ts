@@ -15,5 +15,11 @@ export class Constant extends System {
 			t => this.value
 		);
 	}
+
+	public serialize() {
+		return {
+			value: this.value,
+		};
+	}
 }
 

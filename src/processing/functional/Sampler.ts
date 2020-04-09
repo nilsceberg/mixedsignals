@@ -32,4 +32,10 @@ export class Sampler extends System {
 		});
 		this.meta_freq = new FunctionOutput(() => this.frequency);
 	}
+
+	public serialize() {
+		return {
+			frequency: this.frequency,
+		};
+	}
 }

@@ -12,4 +12,8 @@ export class Display extends System {
 		super();
 		this.signal = new RealTimeInput(x => this.last = x);
 	}
+
+	public serialize() {
+		return {};
+	}
 }

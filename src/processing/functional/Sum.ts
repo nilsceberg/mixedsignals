@@ -20,5 +20,12 @@ export class Sum extends System {
 		this.sum = new FunctionOutput(t => this.aw * this.a.sample(t) + this.bw * this.b.sample(t));
 	}
 
+
+	public serialize() {
+		return {
+			aw: this.aw,
+			bw: this.bw,
+		};
+	}
 }
 
