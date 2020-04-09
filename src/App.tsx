@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { CssBaseline, Theme, createMuiTheme, AppBar, Typography, Switch, FormControlLabel, Box, TextField, Drawer, IconButton, Divider, List, ListItemIcon, ListItem, ListItemText } from "@material-ui/core";
+import { CssBaseline, Theme, createMuiTheme, AppBar, Typography, Switch, FormControlLabel, Box, Button, } from "@material-ui/core";
 import { withStyles, ThemeProvider, createStyles } from "@material-ui/styles";
+import AddIcon from "@material-ui/icons/Add"
 import { Classes } from "@material-ui/styles/mergeClasses/mergeClasses";
 import { Editor } from "./editor/Editor";
 import { Connection, connectionEquals, SignalType } from "./editor/Types";
@@ -215,6 +216,7 @@ export const App = withStyles(styles)(observer((props: { classes: Classes }) => 
 							}
 						}))
 					}}/>}/>
+					<Button variant="outlined" startIcon={<AddIcon/>} onClick={() => { window.location.hash = ""; window.location.reload(); }}>New</Button>
 				</Box>
 			</AppBar>
 			<Editor graph={state.graph} onConnectionCreated={state.addConnection.bind(state)} onConnectionDeleted={state.removeConnection.bind(state)} colors={{
