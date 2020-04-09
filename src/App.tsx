@@ -47,7 +47,7 @@ const styles = (theme: Theme) => createStyles({
 interface SystemNode {
 	system: System,
 	uiNode: any,
-	initialPosition: { x: number, y: number },
+	position: { x: number, y: number },
 }
 
 class AppState {
@@ -72,6 +72,7 @@ class AppState {
 		});
 	}
 
+	@action
 	load(json: string) {
 		const config = JSON.parse(json);
 
@@ -79,20 +80,10 @@ class AppState {
 			const cfg = config.nodes[id];
 			const uiNode = systemNames[cfg._].node;
 			const system = systemNames[cfg._].system;
-
-			this.nodes[id] = {
-				system: new system(cfg),
-				uiNode: uiNode,
-				initialPosition: {
-					x: Math.random() * 500,
-					y: Math.random() * 300,
-				},
-			};
+			this.placeSystem(system, uiNode, { x: Math.random() * 1600, y: Math.random() * 800}, id, cfg);
 		}
 
-		this.graph = config.graph;
-
-		for (const connection of this.graph) {
+		for (const connection of config.graph) {
 			this.addConnection(connection);
 		}
 	}
@@ -134,14 +125,19 @@ class AppState {
 	}
 
 	@action
-	public placeSystem(system: SystemConstructor, node: any, position: { x: number, y: number }) {
+	public placeSystem(system: SystemConstructor, node: any, position: { x: number, y: number }, id?: string, config?: any) {
 		console.log(`Placing ${system.name} at ${position.x}, ${position.y}.`);
-		const id = uuid.v4();
+		id = id ? id : uuid.v4();
 		this.nodes[id] = {
-			system: new system(),
+			system: new system(config),
 			uiNode: node,
-			initialPosition: position,
+			position: position,
 		};
+	}
+
+	@action
+	public updateNodePosition(id: string, position: { x: number, y: number }) {
+		this.nodes[id].position = position;
 	}
 }
 
@@ -181,11 +177,11 @@ export const App = withStyles(styles)(observer((props: { classes: Classes }) => 
 	for (const id in state.nodes) {
 		const node = state.nodes[id];
 		const system = node.system;
-		const offset = node.initialPosition;
+		const position = node.position;
 		let UINode: any = node.uiNode;
 
 		if (UINode) {
-			nodes.push(<UINode id={id} key={id} process={system} positionOffset={offset}/>);
+			nodes.push(<UINode id={id} key={id} process={system} position={position} onMove={(pos: { x: number, y: number }) => state.updateNodePosition(id, pos)}/>);
 		}
 	}
 

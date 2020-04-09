@@ -57,7 +57,8 @@ interface NodeProps {
 	classes: Classes,
 	name: string,
 	io: Omit<ConnectorProps, "node">[],
-	positionOffset?: { x: number, y: number },
+	position: { x: number, y: number },
+	onMove: (to: { x: number, y: number}) => void;
 }
 
 export const Node = withStyles(styles)(class extends React.Component<NodeProps, NodeState> {
@@ -76,8 +77,8 @@ export const Node = withStyles(styles)(class extends React.Component<NodeProps, 
 	}
 
 	render() {
-		return <Draggable positionOffset={this.props.positionOffset || { x: 100, y: 100 }}  handle={`.${this.props.classes.handle}`}
-			onStop={() => this.context.onMoveNode(this.props.id)}
+		return <Draggable position={this.props.position || { x: 100, y: 100 }}  handle={`.${this.props.classes.handle}`}
+			onStop={(e, {x, y}) => this.props.onMove({ x, y })}
 			onDrag={() => this.context.onMoveNode(this.props.id)}>
 			<Paper className={this.props.classes.node} elevation={2}>
 				<div className={this.props.classes.handle}>
