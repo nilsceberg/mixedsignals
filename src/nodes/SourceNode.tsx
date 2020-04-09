@@ -8,15 +8,10 @@ import { SignalType } from "../editor/Types";
 import { Source } from "../processing/buffers/Source";
 
 export const SourceNode = observer((props: NodeProps<Source>) => {
-	const [downloading, setDownloading] = React.useState(false);
-
 	return <Node name="Memory" io={[{direction: "output", name: "buffer", type: SignalType.Buffer}]} {...props}>
-		<TextField value={props.process.url} onChange={e => props.process.url = e.target.value} size="small" variant="outlined" label="URL" type="number"/><br/>
-		<Button fullWidth disabled={downloading} variant="outlined" onClick={async () => {
-			setDownloading(true);
+		<TextField value={props.process.url} onChange={e => props.process.url = e.target.value} size="small" variant="outlined" label="URL" type="text"/><br/>
+		<Button fullWidth disabled={props.process.downloading} variant="outlined" onClick={async () => {
 			await props.process.download();
-			setDownloading(false);
 		}}>Download</Button>
 	</Node>;
 });
-

@@ -33,15 +33,19 @@ export class GraphNode extends React.Component<NodeProps<Graph>, { largest: numb
 
 	render() {
 		return <Node name="Buffer Graph" io={[{direction: "input", name: "buffer", type: SignalType.Buffer}]} {...this.props}>
-				<Scatter data={{
+				<Scatter
+					width={500}
+					height={300}
+					data={{
 					datasets: [{
 						label: "signal",
 						fill: false,
 						showLine: true,
-						backgroundColor: "#fff",
 						tension: 0,
-						borderWidth: 2,
+						borderWidth: 1,
+						pointRadius: 0,
 						borderColor: "#aaa",
+						pointStyle: "none",
 						data: this.props.process.samples.map((y, n) => ({x: n - this.props.process.samples.length, y: y})),
 					}]
 				}} options={{
