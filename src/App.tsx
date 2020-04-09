@@ -4,7 +4,7 @@ import { withStyles, ThemeProvider, createStyles } from "@material-ui/styles";
 import { Classes } from "@material-ui/styles/mergeClasses/mergeClasses";
 import { Editor } from "./editor/Editor";
 import { Connection, connectionEquals, SignalType } from "./editor/Types";
-import { Palette } from "./Palette";
+import { Palette, systemNames } from "./Palette";
 import { SystemConstructor, System } from "./processing/System";
 import { observable, autorun, computed } from "mobx";
 import { Output, Input } from "./signals/IO";
@@ -60,7 +60,7 @@ class AppState {
 	public graph: Connection[] = [];
 
 	@computed
-	public get json(): any {
+	public get json(): string {
 		const serializedNodes: { [key: string]: any } = {};
 		for (const key in state.nodes) {
 			serializedNodes[key] = state.nodes[key].system.serialize();
@@ -71,9 +71,41 @@ class AppState {
 			graph: this.graph,
 		});
 	}
+
+	load(json: string) {
+		const config = JSON.parse(json);
+
+		for (const id in config.nodes) {
+			const cfg = config.nodes[id];
+			const uiNode = systemNames[cfg._].node;
+			const system = systemNames[cfg._].system;
+
+			this.nodes[id] = {
+				system: new system(),
+				uiNode: uiNode,
+				initialPosition: {
+					x: Math.random() * 500,
+					y: Math.random() * 300,
+				},
+			};
+		}
+
+		this.graph = config.graph;
+	}
 }
 
 const state = new AppState();
+
+try {
+	const b64 = window.location.hash.substr(1);
+	console.log("URL hash: ", b64);
+	const json = atob(b64);
+	console.log("Loading from URL: ", json);
+	state.load(json);
+}
+catch (e) {
+	console.log("Couldn't load state from URL")
+}
 
 autorun(() => {
 	console.log(state.json);
