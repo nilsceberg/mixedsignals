@@ -72,6 +72,7 @@ class AppState {
 		}
 
 		return JSON.stringify({
+			version: "0.1.0",
 			nodes: serializedNodes,
 			graph: this.graph,
 		});
