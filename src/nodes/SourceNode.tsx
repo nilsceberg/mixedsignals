@@ -12,6 +12,6 @@ export const SourceNode = observer((props: NodeProps<Source>) => {
 		<TextField value={props.process.url} onChange={e => props.process.url = e.target.value} size="small" variant="outlined" label="URL" type="text"/><br/>
 		<Button fullWidth disabled={props.process.downloading} variant="outlined" onClick={async () => {
 			await props.process.download();
-		}}>Download</Button>
+		}}>Fetch</Button>
 	</Node>;
 });
