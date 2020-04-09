@@ -51,7 +51,7 @@ interface SystemNode {
 }
 
 class AppState {
-	//public idCounter: number = 0;
+	public idCounter: number = 0;
 
 	@observable
 	public nodes: {[id: string]: SystemNode} = {};
@@ -73,6 +73,12 @@ class AppState {
 			nodes: serializedNodes,
 			graph: this.graph,
 		});
+	}
+
+	private createId(): string {
+		const id = this.idCounter.toString(16);
+		this.idCounter++;
+		return id;
 	}
 
 	@action
@@ -132,7 +138,7 @@ class AppState {
 	@action
 	public placeSystem(system: SystemConstructor, node: any, position: { x: number, y: number }, id?: string, config?: any) {
 		console.log(`Placing ${system.name} at ${position.x}, ${position.y}.`);
-		id = id ? id : uuid.v4();
+		id = id ? id : this.createId();
 		this.nodes[id] = {
 			system: new system(config),
 			uiNode: node,
